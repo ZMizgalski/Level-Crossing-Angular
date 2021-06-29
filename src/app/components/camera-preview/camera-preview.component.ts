@@ -29,9 +29,9 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
   public show(): void {
     this.htmlRef = this.dialogService.open(LogsDynamicDialogComponent, {
-      header: 'Choose a Product',
+      header: 'Logs Table',
       width: '70%',
-      contentStyle: { 'max-height': '500px', overflow: 'auto' },
+      contentStyle: { 'max-height': '500px', overflow: 'auto', padding: '0' },
       baseZIndex: 10000,
     });
   }

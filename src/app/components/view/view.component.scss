@@ -47,6 +47,26 @@
       max-height: 45px;
       min-width: 30px;
 
+      ::ng-deep .p-button {
+        background: $Orange;
+      }
+
+      ::ng-deep p-button {
+        button {
+          flex: 100;
+          border: none;
+          box-shadow: none;
+
+          > span {
+            color: black;
+          }
+          > span:hover {
+            transition: 0.2s ease;
+            color: white;
+          }
+        }
+      }
+
       &__search-bar {
         border: none;
         resize: vertical;
