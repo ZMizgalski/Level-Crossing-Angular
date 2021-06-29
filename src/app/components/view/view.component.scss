@@ -1,0 +1,85 @@
+@import "../fonts.scss";
+@import "../colors.scss";
+
+:host {
+  width: inherit;
+}
+
+.view {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+
+  &-content-continer {
+    display: flex;
+    flex-wrap: wrap;
+    width: inherit;
+    flex: 95;
+    align-content: center;
+    justify-content: center;
+    align-items: center;
+  }
+
+  &-header {
+    width: inherit;
+    display: flex;
+    flex-wrap: wrap;
+    margin-bottom: 35px;
+    align-items: center;
+    justify-content: space-between;
+    flex: 5;
+
+    &__p {
+      margin: auto;
+      justify-self: center;
+      font-size: 10vw;
+      font-weight: bold;
+      padding: 0;
+    }
+    .search-box {
+      margin: auto;
+      display: flex;
+      height: 5vw;
+      max-height: 45px;
+      min-width: 30px;
+
+      &__search-bar {
+        border: none;
+        resize: vertical;
+        width: 100%;
+        line-height: inherit;
+        background-color: $Orange;
+      }
+
+      &__button {
+        background: $Orange !important;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        flex-direction: column;
+        border: none;
+        background: transparent;
+        width: inherit;
+
+        .pi {
+          font-size: 25px;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: 700px) {
+  .view-header__p {
+    font-size: 30vw;
+  }
+  .search-box__button .pi {
+    font-size: 5vw !important;
+  }
+  .search-box {
+    height: 10vw !important;
+  }
+}

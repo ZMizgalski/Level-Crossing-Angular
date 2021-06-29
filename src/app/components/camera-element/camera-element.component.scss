@@ -1,0 +1,47 @@
+@import "../colors.scss";
+@import "../fonts.scss";
+
+.camera-elem {
+  margin: 10px !important;
+  flex-direction: column;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  background: $Orange;
+  display: flex;
+  max-width: 300px;
+  width: 300px;
+  padding: 0;
+  margin: 0;
+
+  &__img {
+    filter: none;
+    max-width: 100%;
+    max-height: 200px;
+  }
+
+  &__img--not-exists {
+    background: black;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 200px;
+    .pi {
+      color: $Orange;
+      font-size: 50px;
+    }
+  }
+
+  &-content {
+    flex-direction: column;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    &__p {
+      font-weight: bold;
+      font-size: 20px;
+      margin: 0;
+      padding: 10px;
+    }
+  }
+}

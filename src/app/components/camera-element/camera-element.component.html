@@ -1,0 +1,9 @@
+<div class="camera-elem" (click)="route(data.id)">
+  <div *ngIf="data.img == null" class="camera-elem__img--not-exists">
+    <i class="pi pi-camera"></i>
+  </div>
+  <img *ngIf="data.img != null" [src]="data.img" class="camera-elem__img" />
+  <div class="camera-elem-content">
+    <p class="camera-elem-content__p">{{data.data}}</p>
+  </div>
+</div>

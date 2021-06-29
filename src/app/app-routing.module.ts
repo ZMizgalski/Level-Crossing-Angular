@@ -1,10 +1,16 @@
 import { NgModule } from '@angular/core';
-import { RouterModule, Routes } from '@angular/router';
+import { Routes, RouterModule } from '@angular/router';
+import { ViewComponent } from './components/view/view.component';
+import { CameraPreviewComponent } from './components/camera-preview/camera-preview.component';
 
-const routes: Routes = [];
+const routes: Routes = [
+  { path: '', redirectTo: '/view', pathMatch: 'full' },
+  { path: 'view', component: ViewComponent },
+  { path: 'camera-preview/:id', component: CameraPreviewComponent },
+];
 
 @NgModule({
   imports: [RouterModule.forRoot(routes)],
-  exports: [RouterModule]
+  exports: [RouterModule],
 })
-export class AppRoutingModule { }
+export class AppRoutingModule {}

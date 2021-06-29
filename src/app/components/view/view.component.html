@@ -1,0 +1,12 @@
+<div class="view">
+  <div class="view-header">
+    <p class="view-header__p">View</p>
+    <div class="search-box">
+      <input class="search-box__search-bar" />
+      <button class="search-box__button"><i class="pi pi-search"></i></button>
+    </div>
+  </div>
+  <div class="view-content-continer">
+    <app-camera-element *ngFor="let item of data" [data]="item"></app-camera-element>
+  </div>
+</div>

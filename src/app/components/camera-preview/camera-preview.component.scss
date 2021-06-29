@@ -1,0 +1,105 @@
+@import "../colors.scss";
+@import "../fonts.scss";
+
+:host {
+  width: 100%;
+  height: inherit;
+}
+
+.preview {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+
+  height: 100%;
+  &-camera {
+    width: inherit;
+    display: flex;
+    box-shadow: rgb(0 0 0 / 24%) 0px 8px 9px 0px;
+    flex: 60;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    &__p {
+      font-weight: bold;
+      font-size: $font-size-small;
+    }
+
+    &-container {
+      .pi {
+        position: absolute;
+      }
+
+      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
+        rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+      display: flex;
+      background: $Orange;
+      justify-content: center;
+      padding: 10%;
+      flex: 60;
+      width: inherit;
+      &__video {
+        box-shadow: rgb(0 0 0 / 24%) 5px 10px 9px 0px;
+        max-width: 100%;
+        background: white;
+        border-radius: 10px;
+      }
+    }
+
+    .preview-camera-actions {
+      width: inherit;
+      display: flex;
+      background: $Orange;
+      flex-wrap: wrap;
+      justify-content: center;
+      align-items: center;
+      padding: 10px;
+
+      &-shading {
+        display: flex;
+        box-shadow: rgb(0 0 0 / 24%) 5px 10px 9px 0px;
+        border-radius: 10px;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+
+        background: white;
+        &__button {
+          margin: 10px;
+        }
+
+        .actions-data-picker-box {
+          display: flex;
+          flex-wrap: wrap;
+          justify-content: center;
+          align-items: center;
+          p-calendar {
+            margin: 5px;
+          }
+
+          &__button {
+            margin: 10px;
+          }
+        }
+      }
+    }
+  }
+  .areas-container {
+    flex: 40;
+    width: inherit;
+    .area-container {
+      width: inherit;
+      justify-content: space-between;
+      display: flex;
+      align-items: center;
+      &__text {
+        margin: 10px;
+      }
+
+      &__button {
+        margin: 10px;
+      }
+    }
+  }
+}

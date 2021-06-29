@@ -1,0 +1,70 @@
+<div class="preview">
+  <div class="preview-camera">
+    <p class="preview-camera__p">Camera name</p>
+    <div class="preview-camera-container">
+      <video
+        width="640"
+        height="480"
+        class="preview-camera-container__video"
+      ></video>
+    </div>
+    <div class="preview-camera-actions">
+      <div class="preview-camera-actions-shading">
+        <button
+          pButton
+          pRipple
+          icon="pi pi-chevron-left"
+          type="button"
+          class="
+            preview-camera-actions-shading__button
+            p-button-rounded p-button-secondary p-button-text
+          "
+        ></button>
+        <button
+          pButton
+          pRipple
+          icon="pi pi-chevron-right"
+          type="button"
+          class="
+            preview-camera-actions-shading__button
+            p-button-rounded p-button-secondary p-button-text
+          "
+        ></button>
+        <div class="actions-data-picker-box">
+          <p-calendar
+            [(ngModel)]="date"
+            [showIcon]="true"
+            inputId="icon"
+          ></p-calendar>
+          <button
+            pButton
+            pRipple
+            (click)="show()"
+            type="button"
+            class="
+              actions-data-picker-box__button
+              p-button-rounded p-button-secondary p-button-text
+            "
+            icon="pi pi-search"
+          ></button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="areas-container">
+    <div class="area-container">
+      <p class="area-container__text">Area Name</p>
+      <p class="area-container__text">Type</p>
+      <button
+        pButton
+        pRipple
+        type="button"
+        class="
+          area-container__button
+          p-button-rounded p-button-danger p-button-text
+        "
+        icon="pi pi-times"
+      ></button>
+    </div>
+  </div>
+</div>
