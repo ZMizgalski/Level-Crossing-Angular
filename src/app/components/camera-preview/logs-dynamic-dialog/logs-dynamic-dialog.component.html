@@ -3,8 +3,65 @@
   [value]="logs"
   [rowHover]="true"
   [rows]="10"
-  [paginator]="true"
-  [rowsPerPageOptions]="[10, 25, 50]"
-  [loading]="loading"
+  [loading]="false"
+  [showCurrentPageReport]="true"
+  [globalFilterFields]="['time', 'logs.time']"
 >
+  <ng-template pTemplate="header">
+    <tr class="header-tr">
+      <th class="header-tr-th">
+        <p class="header-tr-th__text">Time</p>
+      </th>
+      <th>
+        <div class="header-search-box">
+          <span class="header-search-box-span">
+            <i class="pi pi-search"></i>
+            <input
+              pInputText
+              type="text"
+              (input)="applyFilterForTable($event, 'contains')"
+              placeholder="Search
+            Time"
+            />
+          </span>
+        </div>
+      </th>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="body" let-log>
+    <tr class="body-tr">
+      <td class="body-tr-td">
+        {{ log.time }}
+      </td>
+      <td>
+        <div class="body-tr-td-button-container">
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-download"
+            class="
+              body-tr-td-button-container__button
+              p-button-rounded p-button-text
+            "
+          ></button>
+          <button
+            pButton
+            pRipple
+            type="button"
+            icon="pi pi-play"
+            class="
+              body-tr-td-button-container__button
+              p-button-rounded p-button-text
+            "
+          ></button>
+        </div>
+      </td>
+    </tr>
+  </ng-template>
+  <ng-template pTemplate="emptymessage">
+    <tr>
+      <td style="text-align: center" colspan="1">No logs found.</td>
+    </tr>
+  </ng-template>
 </p-table>

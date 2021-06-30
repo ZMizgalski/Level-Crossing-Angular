@@ -1,0 +1,66 @@
+@media screen and (max-width: 450px) {
+  .header-tr {
+    flex-wrap: wrap !important;
+  }
+}
+
+.header-tr {
+  &-th {
+    text-align: center;
+    width: inherit;
+    &__text {
+      text-align: center;
+    }
+  }
+
+  th {
+    width: inherit;
+    height: 100%;
+    flex: 100;
+    .header-search-box {
+      display: flex;
+      outline: none;
+      justify-content: center;
+      align-items: center;
+      border-radius: 5px;
+      height: inherit;
+
+      &-span {
+        background: transparent;
+        border: 1px solid #c2c2c2;
+
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border-radius: 5px;
+        height: 30px;
+        .pi {
+          background: transparent;
+          margin: 5px;
+        }
+
+        input {
+          background: transparent;
+          border: none;
+          outline: none;
+          margin: 5px;
+        }
+      }
+    }
+  }
+}
+
+.body-tr {
+  &-td {
+    text-align: center !important;
+    &-button-container {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      &__button {
+        margin: 10px;
+      }
+    }
+  }
+}
