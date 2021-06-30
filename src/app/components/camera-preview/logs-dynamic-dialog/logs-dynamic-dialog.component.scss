@@ -70,12 +70,22 @@
 }
 
 @media screen and (max-width: 40rem) {
+  .header-tr-th {
+    display: none !important;
+  }
+
+  .body-tr-td {
+    p {
+      display: unset !important;
+    }
+  }
+
   :host ::ng-deep {
     .p-datatable {
       &.p-datatable-responsive-demo {
         .p-datatable-thead > tr > th,
         .p-datatable-tfoot > tr > td {
-          display: flex !important;
+          display: flex;
           justify-content: center;
         }
 

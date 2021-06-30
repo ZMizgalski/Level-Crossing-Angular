@@ -44,46 +44,33 @@
             icon="pi pi-filter"
             [timeOnly]="true"
           ></p-calendar>
-          <button
-            pButton
-            pRipple
-            (click)="showLogsDialog()"
-            type="button"
-            class="
-              actions-data-picker-box__button
-              p-button-rounded p-button-secondary p-button-text
-            "
-            icon="pi pi-search"
-          ></button>
-          <button
-            pButton
-            pRipple
-            (click)="showAreasDialog()"
-            type="button"
-            class="
-              actions-data-picker-box__button
-              p-button-rounded p-button-secondary p-button-text
-            "
-            icon="pi pi-sliders-v"
-          ></button>
+
+          <div class="actions-data-picker-box-container">
+            <button
+              pButton
+              pRipple
+              (click)="showLogsDialog()"
+              type="button"
+              class="
+                actions-data-picker-box-container__button
+                p-button-rounded p-button-secondary p-button-text
+              "
+              icon="pi pi-search"
+            ></button>
+            <button
+              pButton
+              pRipple
+              (click)="showAreasDialog()"
+              type="button"
+              class="
+                actions-data-picker-box-container__button
+                p-button-rounded p-button-secondary p-button-text
+              "
+              icon="pi pi-sliders-v"
+            ></button>
+          </div>
         </div>
       </div>
-    </div>
-  </div>
-  <div class="areas-container" style="display: none">
-    <div class="area-container">
-      <p class="area-container__text">Area Name</p>
-      <p class="area-container__text">Type</p>
-      <button
-        pButton
-        pRipple
-        type="button"
-        class="
-          area-container__button
-          p-button-rounded p-button-danger p-button-text
-        "
-        icon="pi pi-times"
-      ></button>
     </div>
   </div>
 </div>

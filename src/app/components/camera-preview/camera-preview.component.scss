@@ -1,9 +1,9 @@
 @import "../colors.scss";
 @import "../fonts.scss";
 
-@media screen and (max-width: 700px) {
-  .actions-data-picker-box__button {
-    // width: auto;
+@media screen and (min-width: 950px) {
+  .actions-data-picker-box-container {
+    width: auto !important;
   }
 }
 
@@ -85,29 +85,17 @@
             margin: 5px;
           }
 
-          &__button {
-            margin: 10px;
+          &-container {
+            align-items: center;
+            justify-content: center;
+            flex-wrap: wrap;
+            display: flex;
+            width: 100%;
+            &__button {
+              margin: 10px;
+            }
           }
         }
-      }
-    }
-  }
-  .areas-container {
-    background: $Brighter-Blue;
-    flex: 40;
-    width: inherit;
-    .area-container {
-      background: $Camera-Actions-Blue;
-      width: inherit;
-      justify-content: space-between;
-      display: flex;
-      align-items: center;
-      &__text {
-        margin: 10px;
-      }
-
-      &__button {
-        margin: 10px;
       }
     }
   }
