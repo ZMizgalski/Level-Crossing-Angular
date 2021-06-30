@@ -1,6 +1,12 @@
 @import "../colors.scss";
 @import "../fonts.scss";
 
+@media screen and (max-width: 700px) {
+  .actions-data-picker-box__button {
+    // width: auto;
+  }
+}
+
 :host {
   width: 100%;
   height: inherit;
@@ -15,6 +21,7 @@
   height: 100%;
   &-camera {
     width: inherit;
+    background: $Brighter-Blue;
     display: flex;
     box-shadow: rgb(0 0 0 / 24%) 0px 8px 9px 0px;
     flex: 60;
@@ -27,19 +34,20 @@
     }
 
     &-container {
+      align-items: center;
       .pi {
         position: absolute;
       }
       box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
         rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
       display: flex;
-      background: $Orange;
+      background: $Darker-Blue;
       justify-content: center;
       padding: 30px;
       flex: 60;
       width: inherit;
       &__video {
-        box-shadow: rgb(0 0 0 / 24%) 5px 10px 9px 0px;
+        box-shadow: rgb(0 0 0 / 24%) 5px 5px 2px 2px;
         max-width: 100%;
         background: white;
         border-radius: 10px;
@@ -49,7 +57,7 @@
     .preview-camera-actions {
       width: inherit;
       display: flex;
-      background: $Orange;
+      background: $Brighter-Blue;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
@@ -57,7 +65,7 @@
 
       &-shading {
         display: flex;
-        box-shadow: rgb(0 0 0 / 24%) 5px 10px 9px 0px;
+        box-shadow: rgb(0 0 0 / 24%) 4px 4px 2px 1px;
         border-radius: 10px;
         flex-wrap: wrap;
         justify-content: center;
@@ -85,9 +93,11 @@
     }
   }
   .areas-container {
+    background: $Brighter-Blue;
     flex: 40;
     width: inherit;
     .area-container {
+      background: $Camera-Actions-Blue;
       width: inherit;
       justify-content: space-between;
       display: flex;

@@ -7,6 +7,7 @@
 
 .view {
   display: flex;
+  background: $BackGround-Blue;
   justify-content: center;
   align-items: center;
   width: 100%;
@@ -48,7 +49,7 @@
       min-width: 30px;
 
       ::ng-deep .p-button {
-        background: $Orange;
+        background: $Darker-Blue;
       }
 
       ::ng-deep p-button {
@@ -72,11 +73,11 @@
         resize: vertical;
         width: 100%;
         line-height: inherit;
-        background-color: $Orange;
+        background-color: $Darker-Blue;
       }
 
       &__button {
-        background: $Orange !important;
+        background: $Darker-Blue !important;
         display: flex;
         align-items: center;
         justify-content: center;

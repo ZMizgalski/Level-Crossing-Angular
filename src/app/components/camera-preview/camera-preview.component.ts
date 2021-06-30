@@ -1,3 +1,4 @@
+import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
@@ -10,6 +11,7 @@ import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 })
 export class CameraPreviewComponent implements OnInit, OnDestroy {
   date!: Date;
+  date2!: Date;
   htmlRef!: DynamicDialogRef;
 
   constructor(
@@ -27,7 +29,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
     }
   }
 
-  public show(): void {
+  public showLogsDialog(): void {
     this.htmlRef = this.dialogService.open(LogsDynamicDialogComponent, {
       header: 'Logs Table',
       width: '70%',
@@ -35,6 +37,16 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       baseZIndex: 10000,
     });
   }
+
+  public showAreasDialog(): void {
+    this.htmlRef = this.dialogService.open(AreasDynamicDialogComponent, {
+      header: 'Areas Table',
+      width: '70%',
+      contentStyle: { 'max-height': '500px', overflow: 'auto', padding: '0' },
+      baseZIndex: 10000,
+    });
+  }
+
   private gedIdFromRoute(): string | null {
     return this.route.snapshot.paramMap.get('id');
   }

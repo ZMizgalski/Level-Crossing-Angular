@@ -6,7 +6,7 @@
   flex-direction: column;
   box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
     rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
-  background: $Orange;
+  background: $Darker-Blue;
   display: flex;
   max-width: 300px;
   width: 300px;
@@ -26,7 +26,7 @@
     align-items: center;
     height: 200px;
     .pi {
-      color: $Orange;
+      color: $Darker-Blue;
       font-size: 50px;
     }
   }

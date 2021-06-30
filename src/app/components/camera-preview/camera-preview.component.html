@@ -32,14 +32,22 @@
         ></button>
         <div class="actions-data-picker-box">
           <p-calendar
+            [touchUI]="true"
+            [showTime]="true"
             [(ngModel)]="date"
             [showIcon]="true"
-            inputId="icon"
+            [showButtonBar]="true"
+          ></p-calendar>
+          <p-calendar
+            [(ngModel)]="date2"
+            [showIcon]="true"
+            icon="pi pi-filter"
+            [timeOnly]="true"
           ></p-calendar>
           <button
             pButton
             pRipple
-            (click)="show()"
+            (click)="showLogsDialog()"
             type="button"
             class="
               actions-data-picker-box__button
@@ -47,11 +55,22 @@
             "
             icon="pi pi-search"
           ></button>
+          <button
+            pButton
+            pRipple
+            (click)="showAreasDialog()"
+            type="button"
+            class="
+              actions-data-picker-box__button
+              p-button-rounded p-button-secondary p-button-text
+            "
+            icon="pi pi-sliders-v"
+          ></button>
         </div>
       </div>
     </div>
   </div>
-  <div class="areas-container">
+  <div class="areas-container" style="display: none">
     <div class="area-container">
       <p class="area-container__text">Area Name</p>
       <p class="area-container__text">Type</p>

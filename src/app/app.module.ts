@@ -13,6 +13,7 @@ import { FormsModule } from '@angular/forms';
 import { CalendarModule } from 'primeng/calendar';
 import { LogsDynamicDialogComponent } from './components/camera-preview/logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { TableModule } from 'primeng/table';
+import { AreasDynamicDialogComponent } from './components/camera-preview/areas-dynamic-dialog/areas-dynamic-dialog.component';
 
 @NgModule({
   declarations: [
@@ -22,6 +23,7 @@ import { TableModule } from 'primeng/table';
     CameraPreviewComponent,
     CameraElementComponent,
     LogsDynamicDialogComponent,
+    AreasDynamicDialogComponent,
   ],
   imports: [
     BrowserModule,
