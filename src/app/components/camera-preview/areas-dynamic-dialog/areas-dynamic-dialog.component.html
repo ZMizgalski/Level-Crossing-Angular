@@ -3,7 +3,7 @@
   [value]="logs"
   [rowHover]="true"
   [rows]="10"
-  [loading]="false"
+  [loading]="loading"
   [showCurrentPageReport]="true"
   [globalFilterFields]="['time', 'logs.time']"
   styleClass="p-datatable-responsive-demo"
@@ -11,27 +11,17 @@
   <ng-template pTemplate="header">
     <tr class="header-tr">
       <th class="header-tr-th">
-        <p class="header-tr-th__text">Time</p>
+        <p class="header-tr-th__text">Area Name</p>
       </th>
-      <th>
-        <div class="header-search-box">
-          <span class="header-search-box-span">
-            <i class="pi pi-search"></i>
-            <input
-              pInputText
-              type="text"
-              (input)="applyFilterForTable($event, 'contains')"
-              placeholder="Search"
-            />
-          </span>
-        </div>
+      <th class="header-tr-th">
+        <p class="header-tr-th__text">Action</p>
       </th>
     </tr>
   </ng-template>
-  <ng-template pTemplate="body" let-log>
+  <ng-template pTemplate="body" let-area>
     <tr class="body-tr">
       <td class="body-tr-td">
-        {{ log.time }}
+        {{ area.area.areaName }}
       </td>
       <td>
         <div class="body-tr-td-button-container">
@@ -39,7 +29,7 @@
             pButton
             pRipple
             type="button"
-            icon="pi pi-download"
+            icon="pi pi-pencil"
             class="
               body-tr-td-button-container__button
               p-button-rounded p-button-text
@@ -49,10 +39,10 @@
             pButton
             pRipple
             type="button"
-            icon="pi pi-play"
+            icon="pi pi-times"
             class="
               body-tr-td-button-container__button
-              p-button-rounded p-button-text
+              p-button-rounded p-button-text p-button-danger
             "
           ></button>
         </div>
@@ -61,7 +51,7 @@
   </ng-template>
   <ng-template pTemplate="emptymessage">
     <tr>
-      <td style="text-align: center" colspan="1">No logs found.</td>
+      <td style="text-align: center" colspan="1">No Areas found.</td>
     </tr>
   </ng-template>
 </p-table>

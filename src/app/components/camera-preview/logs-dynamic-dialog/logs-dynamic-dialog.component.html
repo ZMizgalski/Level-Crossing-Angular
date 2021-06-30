@@ -3,7 +3,7 @@
   [value]="logs"
   [rowHover]="true"
   [rows]="10"
-  [loading]="false"
+  [loading]="loading"
   [showCurrentPageReport]="true"
   [globalFilterFields]="['time', 'logs.time']"
   styleClass="p-datatable-responsive-demo"
@@ -31,7 +31,7 @@
   <ng-template pTemplate="body" let-log>
     <tr class="body-tr">
       <td class="body-tr-td">
-        <p style="display: none">Time:</p>
+        <p style="display: none; font-weight: bold">Time:</p>
         {{ log.time }}
       </td>
       <td>
@@ -53,7 +53,7 @@
             icon="pi pi-play"
             class="
               body-tr-td-button-container__button
-              p-button-rounded p-button-text
+              p-button-rounded p-button-text p-button-success
             "
           ></button>
         </div>
