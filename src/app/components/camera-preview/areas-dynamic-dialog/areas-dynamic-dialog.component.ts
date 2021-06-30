@@ -15,4 +15,8 @@ export class AreasDynamicDialogComponent {
     this.logs = config.data;
     this.loading = false;
   }
+
+  public editArea(): void {}
+
+  public deleteArea(): void {}
 }

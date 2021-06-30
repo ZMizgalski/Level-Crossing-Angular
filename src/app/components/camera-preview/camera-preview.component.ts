@@ -104,4 +104,8 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
   private gedIdFromRoute(): string | null {
     return this.route.snapshot.paramMap.get('id');
   }
+
+  public previousCamera(): void {}
+
+  public nextCamera(): void {}
 }

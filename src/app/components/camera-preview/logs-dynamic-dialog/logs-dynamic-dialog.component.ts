@@ -21,4 +21,8 @@ export class LogsDynamicDialogComponent {
   public applyFilterForTable($event: any, val: string): void {
     this.t!.filterGlobal(($event.target as HTMLInputElement).value, val);
   }
+
+  public download(): void {}
+
+  public play(): void {}
 }
