@@ -48,52 +48,55 @@
       width: inherit;
       &__video {
         box-shadow: rgb(0 0 0 / 24%) 5px 5px 2px 2px;
-        max-width: 100%;
+        max-width: 640px;
+        max-height: 480px;
+        width: 100%;
+        height: auto !important;
         background: white;
         border-radius: 10px;
       }
     }
+  }
 
-    .preview-camera-actions {
-      width: inherit;
+  .preview-camera-actions {
+    width: inherit;
+    display: flex;
+    background: $Brighter-Blue;
+    flex-wrap: wrap;
+    justify-content: center;
+    align-items: center;
+    padding: 10px;
+
+    &-shading {
       display: flex;
-      background: $Brighter-Blue;
+      box-shadow: rgb(0 0 0 / 24%) 4px 4px 2px 1px;
+      border-radius: 10px;
       flex-wrap: wrap;
       justify-content: center;
       align-items: center;
-      padding: 10px;
 
-      &-shading {
+      background: white;
+      &__button {
+        margin: 10px;
+      }
+
+      .actions-data-picker-box {
         display: flex;
-        box-shadow: rgb(0 0 0 / 24%) 4px 4px 2px 1px;
-        border-radius: 10px;
         flex-wrap: wrap;
         justify-content: center;
         align-items: center;
-
-        background: white;
-        &__button {
-          margin: 10px;
+        p-calendar {
+          margin: 5px;
         }
 
-        .actions-data-picker-box {
-          display: flex;
-          flex-wrap: wrap;
-          justify-content: center;
+        &-container {
           align-items: center;
-          p-calendar {
-            margin: 5px;
-          }
-
-          &-container {
-            align-items: center;
-            justify-content: center;
-            flex-wrap: wrap;
-            display: flex;
-            width: 100%;
-            &__button {
-              margin: 10px;
-            }
+          justify-content: center;
+          flex-wrap: wrap;
+          display: flex;
+          width: 100%;
+          &__button {
+            margin: 10px;
           }
         }
       }

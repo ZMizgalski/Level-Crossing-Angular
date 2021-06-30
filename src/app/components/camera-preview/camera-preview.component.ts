@@ -2,7 +2,6 @@ import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
 import {
-  AfterViewInit,
   Component,
   ElementRef,
   OnDestroy,
@@ -118,8 +117,24 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
   public nextCamera(): void {}
 
   public getVideoPoint($event: any): void {
-    console.log(this.video.nativeElement.offsetWidth);
-    console.log(this.video.nativeElement.offsetHeight);
-    console.log($event);
+    const screenWidth = window.innerWidth;
+    const screenHeight = window.innerHeight;
+    const videoHeight = this.video.nativeElement.offsetHeight;
+    const videoWidth = this.video.nativeElement.offsetWidth;
+    const pointX = $event.x;
+    const pointY = $event.y;
+
+    console.log(
+      pointX - this.calculateX(screenWidth, videoWidth),
+      pointY - this.calculateY(screenHeight, videoHeight)
+    );
+  }
+
+  private calculateX(screenWidth: number, videoWidth: number): number {
+    return screenWidth - (videoWidth + (screenWidth - videoWidth) / 2);
+  }
+
+  private calculateY(screenHeight: number, videoHeight: number): number {
+    return screenHeight - (videoHeight + (screenHeight - videoHeight) / 2);
   }
 }

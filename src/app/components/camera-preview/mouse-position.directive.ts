@@ -7,8 +7,9 @@ import { EventEmitter } from '@angular/core';
   selector: '[appMousePosition]',
 })
 export class MousePositionDirecive {
-  @Output() onPointTransfer: EventEmitter<Point> = new EventEmitter();
-  @HostListener('mousemove', ['$event']) onMouseMove(event: {
+  @Output() onPointTransfer: EventEmitter<any> = new EventEmitter();
+
+  @HostListener('click', ['$event']) onMouseMove(event: {
     clientX: any;
     clientY: any;
   }) {
