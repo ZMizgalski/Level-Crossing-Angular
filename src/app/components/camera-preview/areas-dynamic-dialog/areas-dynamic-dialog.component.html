@@ -1,5 +1,4 @@
 <p-table
-  #t
   [value]="logs"
   [rowHover]="true"
   [rows]="10"
@@ -21,6 +20,7 @@
   <ng-template pTemplate="body" let-area>
     <tr class="body-tr">
       <td class="body-tr-td">
+        <p>Area Name:</p>
         {{ area.area.areaName }}
       </td>
       <td>

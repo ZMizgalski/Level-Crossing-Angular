@@ -57,6 +57,10 @@
 .body-tr {
   &-td {
     text-align: center !important;
+    p {
+      display: none;
+      font-weight: bold;
+    }
     &-button-container {
       display: flex;
       align-items: center;

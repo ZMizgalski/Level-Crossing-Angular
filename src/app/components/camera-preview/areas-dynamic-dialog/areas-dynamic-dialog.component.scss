@@ -57,6 +57,10 @@
 .body-tr {
   &-td {
     text-align: center !important;
+    p {
+      display: none;
+      font-weight: bold;
+    }
     &-button-container {
       display: flex;
       align-items: center;
@@ -75,8 +79,13 @@
       &.p-datatable-responsive-demo {
         .p-datatable-thead > tr > th,
         .p-datatable-tfoot > tr > td {
-          display: flex !important;
-          justify-content: center;
+          display: none;
+        }
+
+        .body-tr-td {
+          p {
+            display: unset !important;
+          }
         }
 
         .p-datatable-tbody > tr > td {
