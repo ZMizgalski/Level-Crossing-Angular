@@ -2,7 +2,17 @@
   <div class="preview-camera">
     <p class="preview-camera__p">Camera name</p>
     <div class="preview-camera-container">
-      <video autoplay loop muted class="preview-camera-container__video">
+      <video
+        #video
+        width="640"
+        height="480"
+        appMousePosition
+        (onPointTransfer)="getVideoPoint($event)"
+        autoplay
+        loop
+        muted
+        class="preview-camera-container__video"
+      >
         <source src="../../../assets/20-21-02.mp4" type="video/mp4" />
         Browse not suported
       </video>

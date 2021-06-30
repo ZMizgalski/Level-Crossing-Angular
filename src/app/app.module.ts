@@ -1,3 +1,4 @@
+import { MousePositionDirecive } from './components/camera-preview/mouse-position.directive';
 import { DialogService } from 'primeng/dynamicdialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -24,6 +25,7 @@ import { AreasDynamicDialogComponent } from './components/camera-preview/areas-d
     CameraElementComponent,
     LogsDynamicDialogComponent,
     AreasDynamicDialogComponent,
+    MousePositionDirecive,
   ],
   imports: [
     BrowserModule,
@@ -35,5 +37,6 @@ import { AreasDynamicDialogComponent } from './components/camera-preview/areas-d
   ],
   providers: [DialogService],
   bootstrap: [AppComponent],
+  exports: [MousePositionDirecive],
 })
 export class AppModule {}

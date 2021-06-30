@@ -1,7 +1,14 @@
 import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  AfterViewInit,
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LogsModel } from '../interfaces/logsModel';
@@ -12,6 +19,7 @@ import { LogsModel } from '../interfaces/logsModel';
   styleUrls: ['./camera-preview.component.scss'],
 })
 export class CameraPreviewComponent implements OnInit, OnDestroy {
+  @ViewChild('video') video!: ElementRef;
   date!: Date;
   date2!: Date;
   htmlRef!: DynamicDialogRef;
@@ -108,4 +116,10 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
   public previousCamera(): void {}
 
   public nextCamera(): void {}
+
+  public getVideoPoint($event: any): void {
+    console.log(this.video.nativeElement.offsetWidth);
+    console.log(this.video.nativeElement.offsetHeight);
+    console.log($event);
+  }
 }
