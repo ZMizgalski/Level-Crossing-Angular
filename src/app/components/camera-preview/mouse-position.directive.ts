@@ -9,11 +9,11 @@ import { EventEmitter } from '@angular/core';
 export class MousePositionDirecive {
   @Output() onPointTransfer: EventEmitter<any> = new EventEmitter();
 
-  @HostListener('click', ['$event']) onMouseMove(event: {
-    clientX: any;
-    clientY: any;
-  }) {
-    const point: Point = { x: event.clientX, y: event.clientY };
-    this.onPointTransfer.emit(point);
+  @HostListener('click', ['$event']) onMouseMove(event: any) {
+    this.onPointTransfer.emit({
+      bnds: event.target.getBoundingClientRect(),
+      x: event.clientX,
+      y: event.clientY,
+    });
   }
 }

@@ -117,24 +117,13 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
   public nextCamera(): void {}
 
   public getVideoPoint($event: any): void {
-    const screenWidth = window.innerWidth;
-    const screenHeight = window.innerHeight;
-    const videoHeight = this.video.nativeElement.offsetHeight;
-    const videoWidth = this.video.nativeElement.offsetWidth;
-    const pointX = $event.x;
-    const pointY = $event.y;
-
-    console.log(
-      pointX - this.calculateX(screenWidth, videoWidth),
-      pointY - this.calculateY(screenHeight, videoHeight)
-    );
-  }
-
-  private calculateX(screenWidth: number, videoWidth: number): number {
-    return screenWidth - (videoWidth + (screenWidth - videoWidth) / 2);
-  }
-
-  private calculateY(screenHeight: number, videoHeight: number): number {
-    return screenHeight - (videoHeight + (screenHeight - videoHeight) / 2);
+    const bnds = $event.bnds;
+    const scaleX = (640 / bnds.width).toFixed(2);
+    const scaleY = (480 / bnds.height).toFixed(2);
+    const x = Number((($event.x - bnds.left) * Number(scaleX)).toFixed(3));
+    const y = Number((($event.y - bnds.top) * Number(scaleY)).toFixed(3));
+    const finalX = x <= 0 ? 0 : x;
+    const finalY = y <= 0 ? 0 : y;
+    console.log(finalX, finalY);
   }
 }
