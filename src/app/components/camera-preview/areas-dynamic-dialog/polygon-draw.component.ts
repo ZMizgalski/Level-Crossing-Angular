@@ -62,21 +62,28 @@ export class PolygonDraw implements AfterViewInit {
     this.prepareCanvas(false);
   }
 
+  private setInterval(): void {
+    this.intervalId = window.setInterval(() => {
+      this.ctx = this.canvas.getContext('2d');
+      this.ctx.drawImage(
+        this.videoTemplate,
+        0,
+        0,
+        this.canvas.width,
+        this.canvas.height
+      );
+      this.areaSelected ? this.draw(true) : this.draw(false);
+    }, 20);
+  }
+
   private prepareCanvas(with_draw: boolean): void {
     this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
-    this.videoTemplate?.addEventListener('play', () => {
-      this.intervalId = window.setInterval(() => {
-        this.ctx = this.canvas.getContext('2d');
-        this.ctx.drawImage(
-          this.videoTemplate,
-          0,
-          0,
-          this.canvas.width,
-          this.canvas.height
-        );
-        this.areaSelected ? this.draw(true) : this.draw(false);
-      }, 20);
-    });
+    if (this.videoTemplate != undefined) {
+      this.videoTemplate.onload = () => {
+        this.setInterval();
+      };
+    }
+    this.setInterval();
     this.videoTemplate?.addEventListener('ended', () => {
       this.clearCanvas();
     });
