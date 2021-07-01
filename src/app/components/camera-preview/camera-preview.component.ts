@@ -126,4 +126,8 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
     const finalY = y <= 0 ? 0 : y;
     console.log(finalX, finalY);
   }
+
+  public polygonResponse($event: any): void {
+    console.log($event);
+  }
 }
