@@ -1,13 +1,7 @@
 import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
-import {
-  Component,
-  ElementRef,
-  OnDestroy,
-  OnInit,
-  ViewChild,
-} from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LogsModel } from '../interfaces/logsModel';
@@ -23,10 +17,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
   date2!: Date;
   htmlRef!: DynamicDialogRef;
 
-  constructor(
-    private route: ActivatedRoute,
-    public dialogService: DialogService
-  ) {}
+  constructor(private route: ActivatedRoute, public dialogService: DialogService) {}
 
   areas: AreaModel[] = [
     {
@@ -115,17 +106,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
   public previousCamera(): void {}
 
   public nextCamera(): void {}
-
-  public getVideoPoint($event: any): void {
-    const bnds = $event.bnds;
-    const scaleX = (640 / bnds.width).toFixed(2);
-    const scaleY = (480 / bnds.height).toFixed(2);
-    const x = Number((($event.x - bnds.left) * Number(scaleX)).toFixed(3));
-    const y = Number((($event.y - bnds.top) * Number(scaleY)).toFixed(3));
-    const finalX = x <= 0 ? 0 : x;
-    const finalY = y <= 0 ? 0 : y;
-    console.log(finalX, finalY);
-  }
 
   public polygonResponse($event: any): void {
     console.log($event);

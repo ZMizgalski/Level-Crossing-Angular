@@ -1,5 +1,4 @@
-import { PolygonDraw } from './components/camera-preview/areas-dynamic-dialog/polygon-draw.component';
-import { MousePositionDirecive } from './components/camera-preview/mouse-position.directive';
+import { PolygonDraw } from './components/camera-preview/polygon-draw.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -26,7 +25,6 @@ import { AreasDynamicDialogComponent } from './components/camera-preview/areas-d
     CameraElementComponent,
     LogsDynamicDialogComponent,
     AreasDynamicDialogComponent,
-    MousePositionDirecive,
     PolygonDraw,
   ],
   imports: [
@@ -39,6 +37,6 @@ import { AreasDynamicDialogComponent } from './components/camera-preview/areas-d
   ],
   providers: [DialogService],
   bootstrap: [AppComponent],
-  exports: [MousePositionDirecive],
+  exports: [],
 })
 export class AppModule {}

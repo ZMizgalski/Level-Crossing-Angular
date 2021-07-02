@@ -1,5 +1,5 @@
-@import "../colors.scss";
-@import "../fonts.scss";
+@import '../colors.scss';
+@import '../fonts.scss';
 
 @media screen and (min-width: 950px) {
   .actions-data-picker-box-container {
@@ -38,8 +38,7 @@
       .pi {
         position: absolute;
       }
-      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
-        rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+      box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
       display: flex;
       background: $Darker-Blue;
       justify-content: center;

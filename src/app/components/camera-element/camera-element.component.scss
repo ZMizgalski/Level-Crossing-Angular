@@ -1,11 +1,10 @@
-@import "../colors.scss";
-@import "../fonts.scss";
+@import '../colors.scss';
+@import '../fonts.scss';
 
 .camera-elem {
   margin: 10px !important;
   flex-direction: column;
-  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px,
-    rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
+  box-shadow: rgba(14, 30, 37, 0.12) 0px 2px 4px 0px, rgba(14, 30, 37, 0.32) 0px 2px 16px 0px;
   background: $Darker-Blue;
   display: flex;
   max-width: 300px;
