@@ -36,6 +36,10 @@ import { Component, OnDestroy } from '@angular/core';
   ],
 })
 export class PolygonDraw implements AfterViewInit, OnDestroy {
+  @Input() public selectedAreaColor?: string;
+  @Input() public lineWidth?: string;
+  @Input() public selectedAreaBorderColor?: string;
+  @Input() public lineColor?: string;
   @Input() public videoTemplate?: HTMLVideoElement;
   @Input() public height?: string;
   @Input() public width?: string;
@@ -73,7 +77,6 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.ctx = this.canvas.getContext('2d');
       this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
       this.areaSelected ? this.draw(true) : this.draw(false);
-      console.log('1');
     }, 20);
     return id;
   }
@@ -95,19 +98,24 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   }
 
   private point(x: number, y: number) {
-    this.ctx.fillStyle = 'white';
-    this.ctx.strokeStyle = 'white';
+    const color = this.lineColor == undefined ? 'white' : this.lineColor;
+    this.ctx.fillStyle = color;
+    this.ctx.strokeStyle = color;
     this.ctx.fillRect(x - 2, y - 2, 4, 4);
     this.ctx.moveTo(x, y);
   }
 
   private fillSelectedPolygon(): void {
+    const selectedAreaColor =
+      this.selectedAreaColor == undefined ? 'rgba(255, 0, 0, 0.5)' : this.selectedAreaColor;
+    const selectedAreaBorderColor =
+      this.selectedAreaBorderColor == undefined ? 'blue' : this.selectedAreaBorderColor;
     this.areaSelected = true;
     this.ctx.lineTo(this.pointsList[0]['x'], this.pointsList[0]['y']);
     this.ctx.closePath();
-    this.ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+    this.ctx.fillStyle = selectedAreaColor;
     this.ctx.fill();
-    this.ctx.strokeStyle = 'blue';
+    this.ctx.strokeStyle = selectedAreaBorderColor;
     if (!this.areaEmitted) {
       this.response.emit(this.pointsList);
       this.areaEmitted = true;
@@ -127,8 +135,10 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   }
 
   private draw(end: boolean): void {
-    this.ctx.lineWidth = 1;
-    this.ctx.strokeStyle = 'white';
+    const color = this.lineColor == undefined ? 'white' : this.lineColor;
+    const lineWidth = this.lineWidth == undefined ? 3 : Number(this.lineWidth);
+    this.ctx.lineWidth = lineWidth;
+    this.ctx.strokeStyle = color;
     this.ctx.lineCap = 'square';
     this.ctx.beginPath();
     this.drawLinesToSelectedPoints(end);

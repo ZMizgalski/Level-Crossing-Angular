@@ -2,7 +2,14 @@
   <div class="preview-camera">
     <p class="preview-camera__p">Camera name</p>
     <div class="preview-camera-container">
-      <polygon-draw [videoTemplate]="videoTemplate" (response)="polygonResponse($event)">
+      <polygon-draw
+        selectedAreaColor="rgba(0, 0, 0, 0.6)"
+        selectedAreaBorderColor=" #235c8a"
+        lineColor="#000000"
+        lineWidth="3"
+        [videoTemplate]="videoTemplate"
+        (response)="polygonResponse($event)"
+      >
         <video #videoTemplate autoplay muted class="preview-camera-container__video">
           <source src="../../../assets/20-21-02.mp4" type="video/mp4" />
           Browse not suported
