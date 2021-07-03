@@ -32,7 +32,7 @@ import { ConfirmationService } from 'primeng/api';
   ],
   imports: [
     ConfirmDialogModule,
-    ConfirmationService,
+
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
@@ -41,7 +41,7 @@ import { ConfirmationService } from 'primeng/api';
     CalendarModule,
     TableModule,
   ],
-  providers: [DialogService],
+  providers: [DialogService, ConfirmationService],
   bootstrap: [AppComponent],
   exports: [],
 })

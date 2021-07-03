@@ -11,7 +11,6 @@ import {
 } from '@angular/core';
 import { Component, OnDestroy } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { Subject } from 'rxjs';
 
 export enum Actions {
   VIDEO_ENDED = 0,
@@ -23,9 +22,18 @@ export enum Actions {
 @Component({
   selector: 'polygon-draw',
   template: `
+    <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
     <div #polygonContainer class="polygon-container" (mousedown)="selectPoint($event)">
-      <div class="polygon-container-spinner">
-        <i *ngIf="!show" class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
+      <div *ngIf="!show" class="polygon-container-spinner">
+        <i class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
+        <button
+          *ngIf="!policyAccepted"
+          class="polygon-container-spinner__button"
+          pButton
+          label="Accept"
+          icon="pi pi-check"
+          (click)="acceptCrossPolicy()"
+        ></button>
       </div>
       <canvas
         class="polygon-container__canvas"
@@ -59,17 +67,26 @@ export enum Actions {
         border-radius: 5px;
 
         &-spinner {
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
           position: absolute;
           top: 50%;
+          pointer-events: none;
           left: 50%;
           transform: translate(-50%, -50%);
           background: transparent;
           &__icon {
             font-size: $font-size-big;
-            pointer-events: none;
             transition: 0.2s ease;
             color: $Brighter-Blue;
+            padding: 10px;
             background: transparent;
+          }
+
+          &__button {
+            pointer-events: all;
           }
         }
 
@@ -99,11 +116,8 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   private intervalId: number[] = [];
   private areaSelected: boolean = false;
   private areaEmitted: boolean = false;
-
-  private moduleSource = new Subject<any>();
-  private moduleValue = this.moduleSource.asObservable();
-
   private videoTemplate!: HTMLVideoElement;
+  public policyAccepted: boolean = false;
 
   constructor(
     private rd2: Renderer2,
@@ -126,27 +140,30 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       .data.some((channel: number) => channel !== 0);
   }
 
+  public acceptCrossPolicy(): void {
+    this.confirmationService.confirm({
+      message: 'To access video playback you need to accept Cross-Policy requirements',
+      accept: () => {
+        this.videoTemplate.play();
+        this.policyAccepted = true;
+      },
+    });
+  }
+
   private getVideoAndSetupCanvas(with_draw: boolean): void {
     this.endpointService.getFileByDate(this.dateOfFile || '').subscribe(
       (response: HttpResponse<Blob>) => {
-        console.log('1');
         this.videoTemplate = document.createElement('video');
         this.videoTemplate.src = URL.createObjectURL(response.body);
         this.videoTemplate.autoplay = true;
-
         const promise = this.videoTemplate.play();
-
         if (promise !== undefined) {
-          promise.catch(error => {
-            this.confirmationService.confirm({
-              message: 'Are you sure that you want to perform this action?',
-              accept: () => {
-                //Actual logic to perform a confirmation
-              },
-            });
+          promise.catch(() => {
+            this.policyAccepted = false;
+            this.acceptCrossPolicy();
           });
         }
-
+        this.policyAccepted = true;
         this.prepareCanvas(with_draw);
       },
       error => {
@@ -171,15 +188,9 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.ctx = this.canvas.getContext('2d');
       this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
       this.areaSelected ? this.draw(true) : this.draw(false);
-      this.checkIfCanvasIsBlank(this.canvas) ? this.reInitCanvas() : (this.show = true);
+      this.checkIfCanvasIsBlank(this.canvas) ? (this.show = false) : (this.show = true);
     }, 200);
     return id;
-  }
-
-  private reInitCanvas(): void {
-    this.show = false;
-    // this.clearCanvas(this.intervalId);
-    // this.getVideoAndSetupCanvas(false);
   }
 
   private prepareCanvas(with_draw: boolean): void {
