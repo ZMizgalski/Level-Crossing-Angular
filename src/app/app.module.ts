@@ -16,6 +16,8 @@ import { LogsDynamicDialogComponent } from './components/camera-preview/logs-dyn
 import { TableModule } from 'primeng/table';
 import { AreasDynamicDialogComponent } from './components/camera-preview/areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { HttpClientModule } from '@angular/common/http';
+import { ConfirmDialogModule } from 'primeng/confirmdialog';
+import { ConfirmationService } from 'primeng/api';
 
 @NgModule({
   declarations: [
@@ -29,6 +31,8 @@ import { HttpClientModule } from '@angular/common/http';
     PolygonDraw,
   ],
   imports: [
+    ConfirmDialogModule,
+    ConfirmationService,
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,

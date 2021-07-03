@@ -1,3 +1,4 @@
+import { ConfirmationService } from 'primeng/api';
 import { EndpointService } from './../servieces/endpoint-service';
 import {
   Input,
@@ -10,18 +11,22 @@ import {
 } from '@angular/core';
 import { Component, OnDestroy } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
+import { Subject } from 'rxjs';
 
 export enum Actions {
   VIDEO_ENDED = 0,
   AREA_SELECTED = 1,
   NOT_ENOUGHT_POINTS = 2,
+  VIDEO_NOT_FOUND = 3,
 }
 
 @Component({
   selector: 'polygon-draw',
   template: `
     <div #polygonContainer class="polygon-container" (mousedown)="selectPoint($event)">
-      <i *ngIf="show" class="pi pi-camera polygon-container__icon"></i>
+      <div class="polygon-container-spinner">
+        <i *ngIf="!show" class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
+      </div>
       <canvas
         class="polygon-container__canvas"
         #polygon
@@ -40,7 +45,7 @@ export enum Actions {
       @import '../fonts.scss';
 
       @media screen and (max-width: 450px) {
-        .polygon-container__icon {
+        .polygon-container-spinner__icon {
           font-size: $font-size-small !important;
         }
       }
@@ -51,20 +56,25 @@ export enum Actions {
         display: flex;
         position: relative;
         background: black;
+        border-radius: 5px;
 
-        &__icon {
-          font-size: $font-size-big;
+        &-spinner {
           position: absolute;
           top: 50%;
-          pointer-events: none;
-          transition: 0.2s ease;
           left: 50%;
-          color: $Brighter-Blue;
-          background: transparent;
           transform: translate(-50%, -50%);
+          background: transparent;
+          &__icon {
+            font-size: $font-size-big;
+            pointer-events: none;
+            transition: 0.2s ease;
+            color: $Brighter-Blue;
+            background: transparent;
+          }
         }
 
         &__canvas {
+          border-radius: inherit;
           cursor: crosshair;
         }
       }
@@ -82,7 +92,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   @Output() public response = new EventEmitter();
   @ViewChild('polygon') private polygon!: ElementRef;
   @ViewChild('polygonContainer') private polygonContainer!: ElementRef;
-  public show: boolean = false;
+  public show: boolean = true;
   private pointsList: any = [];
   private canvas: any;
   private ctx: any;
@@ -90,16 +100,23 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   private areaSelected: boolean = false;
   private areaEmitted: boolean = false;
 
-  private videoTemplate?: HTMLVideoElement;
+  private moduleSource = new Subject<any>();
+  private moduleValue = this.moduleSource.asObservable();
 
-  constructor(private rd2: Renderer2, private endpointService: EndpointService) {}
+  private videoTemplate!: HTMLVideoElement;
+
+  constructor(
+    private rd2: Renderer2,
+    private endpointService: EndpointService,
+    private confirmationService: ConfirmationService
+  ) {}
 
   ngOnDestroy(): void {
     this.clearCanvas(this.intervalId);
   }
 
   ngAfterViewInit(): void {
-    this.getVideoAndSetupCanvas();
+    this.getVideoAndSetupCanvas(false);
   }
 
   private checkIfCanvasIsBlank(canvas: any): boolean {
@@ -109,13 +126,28 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       .data.some((channel: number) => channel !== 0);
   }
 
-  private getVideoAndSetupCanvas(): void {
+  private getVideoAndSetupCanvas(with_draw: boolean): void {
     this.endpointService.getFileByDate(this.dateOfFile || '').subscribe(
       (response: HttpResponse<Blob>) => {
+        console.log('1');
         this.videoTemplate = document.createElement('video');
         this.videoTemplate.src = URL.createObjectURL(response.body);
         this.videoTemplate.autoplay = true;
-        this.prepareCanvas(false);
+
+        const promise = this.videoTemplate.play();
+
+        if (promise !== undefined) {
+          promise.catch(error => {
+            this.confirmationService.confirm({
+              message: 'Are you sure that you want to perform this action?',
+              accept: () => {
+                //Actual logic to perform a confirmation
+              },
+            });
+          });
+        }
+
+        this.prepareCanvas(with_draw);
       },
       error => {
         console.log(error);
@@ -139,19 +171,25 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.ctx = this.canvas.getContext('2d');
       this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
       this.areaSelected ? this.draw(true) : this.draw(false);
-      this.checkIfCanvasIsBlank(this.canvas) ? (this.show = true) : (this.show = false);
-    }, 20);
+      this.checkIfCanvasIsBlank(this.canvas) ? this.reInitCanvas() : (this.show = true);
+    }, 200);
     return id;
+  }
+
+  private reInitCanvas(): void {
+    this.show = false;
+    // this.clearCanvas(this.intervalId);
+    // this.getVideoAndSetupCanvas(false);
   }
 
   private prepareCanvas(with_draw: boolean): void {
     this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
-    if (!this.show) {
+    if (this.show) {
       this.intervalId.push(this.setIntervalAndReturnId());
-      this.show = true;
+      this.show = false;
     }
     this.videoTemplate?.addEventListener('ended', () => {
-      this.getVideoAndSetupCanvas();
+      this.getVideoAndSetupCanvas(true);
       this.response.emit(Actions.VIDEO_ENDED);
     });
     with_draw ? this.draw(false) : '';
@@ -215,7 +253,8 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   }
 
   public selectPoint($event: any): boolean {
-    if (this.show) {
+    if (!this.show) {
+      this.response.emit(Actions.VIDEO_NOT_FOUND);
       return false;
     }
     if (this.areaEmitted) {
