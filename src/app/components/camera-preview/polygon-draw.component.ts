@@ -200,6 +200,11 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.show = false;
     }
     this.videoTemplate?.addEventListener('ended', () => {
+      this.intervalId.forEach(id => {
+        window.clearInterval(id);
+      });
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.show = true;
       this.getVideoAndSetupCanvas(true);
       this.response.emit(Actions.VIDEO_ENDED);
     });
