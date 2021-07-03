@@ -25,8 +25,11 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       area: {
         areaName: 'elo1',
         pointsList: [
-          { x: 2331230, y: 265430 },
-          { x: 233330, y: 263633 },
+          { x: 136, y: 142.359375 },
+          { x: 237, y: 293.359375 },
+          { x: 542, y: 287.359375 },
+          { x: 514, y: 94.359375 },
+          { x: 327, y: 73.359375 },
         ],
       },
     },
@@ -35,8 +38,11 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       area: {
         areaName: 'elo2',
         pointsList: [
-          { x: 2332130, y: 26530 },
-          { x: 233230, y: 26363 },
+          { x: 80, y: 116.359375 },
+          { x: 18, y: 364.359375 },
+          { x: 85, y: 394.359375 },
+          { x: 197, y: 326.359375 },
+          { x: 71, y: 190.359375 },
         ],
       },
     },
@@ -45,8 +51,12 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       area: {
         areaName: 'elo3',
         pointsList: [
-          { x: 23311130, y: 2611530 },
-          { x: 233130, y: 263613 },
+          { x: 258, y: 81.359375 },
+          { x: 324, y: 79.359375 },
+          { x: 456, y: 83.359375 },
+          { x: 557, y: 112.359375 },
+          { x: 504, y: 133.359375 },
+          { x: 350, y: 109.359375 },
         ],
       },
     },

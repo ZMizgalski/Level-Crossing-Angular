@@ -226,7 +226,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
     this.ctx.stroke();
   }
 
-  private point(x: number, y: number) {
+  private drawRectOnClick(x: number, y: number) {
     const color = this.lineColor == undefined ? 'white' : this.lineColor;
     this.ctx.fillStyle = color;
     this.ctx.strokeStyle = color;
@@ -238,10 +238,10 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
     for (let i = 0; i < this.pointsList.length; i++) {
       if (i == 0) {
         this.ctx.moveTo(this.pointsList[i]['x'], this.pointsList[i]['y']);
-        end || this.point(this.pointsList[i]['x'], this.pointsList[i]['y']);
+        end || this.drawRectOnClick(this.pointsList[i]['x'], this.pointsList[i]['y']);
       } else {
         this.ctx.lineTo(this.pointsList[i]['x'], this.pointsList[i]['y']);
-        end || this.point(this.pointsList[i]['x'], this.pointsList[i]['y']);
+        end || this.drawRectOnClick(this.pointsList[i]['x'], this.pointsList[i]['y']);
       }
     }
   }
@@ -304,6 +304,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       return false;
     }
     this.draw(true);
+    console.log(this.pointsList);
     $event.preventDefault();
     return false;
   }
