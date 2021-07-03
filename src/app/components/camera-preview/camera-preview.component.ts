@@ -1,3 +1,4 @@
+import { EndpointService } from './../servieces/endpoint-service';
 import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
@@ -12,12 +13,17 @@ import { LogsModel } from '../interfaces/logsModel';
   styleUrls: ['./camera-preview.component.scss'],
 })
 export class CameraPreviewComponent implements OnInit, OnDestroy {
-  @ViewChild('video') video!: ElementRef;
-  date!: Date;
-  date2!: Date;
-  htmlRef!: DynamicDialogRef;
+  @ViewChild('video') public video!: ElementRef;
+  public date!: Date;
+  public date2!: Date;
+  public htmlRef!: DynamicDialogRef;
+  public id?: string;
 
-  constructor(private route: ActivatedRoute, public dialogService: DialogService) {}
+  constructor(
+    private route: ActivatedRoute,
+    public dialogService: DialogService,
+    private endpointService: EndpointService
+  ) {}
 
   areas: AreaModel[] = [
     {
@@ -80,7 +86,15 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    console.log(this.gedIdFromRoute());
+    this.id = this.gedIdFromRoute() || '';
+    this.endpointService.getCameraById(this.id).subscribe(
+      value => {
+        console.log(value);
+      },
+      error => {
+        console.log(error);
+      }
+    );
   }
 
   ngOnDestroy() {

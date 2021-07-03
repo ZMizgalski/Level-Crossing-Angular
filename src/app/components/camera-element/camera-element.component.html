@@ -1,8 +1,22 @@
-<div class="camera-elem" (click)="route(data.id)">
-  <div *ngIf="data.img == null" class="camera-elem__img--not-exists">
+<div
+  [ngStyle]="{'width': imgLoaded ? 'unset' : '250px'}"
+  class="camera-elem"
+  (click)="route(data.id || '')"
+>
+  <div *ngIf="data.src == null" class="camera-elem__img--not-exists">
     <i class="pi pi-camera"></i>
   </div>
-  <img *ngIf="data.img != null" [src]="data.img" class="camera-elem__img" />
+  <div class="camera-elem-img-container">
+    <div *ngIf="!imgLoaded " class="camera-elem-img-container-icon-container">
+      <i class="pi pi-spin pi-spinner"></i>
+    </div>
+    <img
+      (load)="imgLoaded = !imgLoaded"
+      *ngIf="data.src != null"
+      [src]="data.src"
+      class="camera-elem-img-container__img"
+    />
+  </div>
   <div class="camera-elem-content">
     <p class="camera-elem-content__p">{{ data.data }}</p>
   </div>

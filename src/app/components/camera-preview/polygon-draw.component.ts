@@ -103,7 +103,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   @Input() public lineWidth?: string;
   @Input() public selectedAreaBorderColor?: string;
   @Input() public lineColor?: string;
-  @Input() public dateOfFile?: string;
+  @Input() public id?: string;
   @Input() public height?: string;
   @Input() public width?: string;
   @Output() public response = new EventEmitter();
@@ -151,7 +151,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   }
 
   private getVideoAndSetupCanvas(with_draw: boolean): void {
-    this.endpointService.getFileByDate(this.dateOfFile || '').subscribe(
+    this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
       (response: HttpResponse<Blob>) => {
         this.videoTemplate = document.createElement('video');
         this.videoTemplate.src = URL.createObjectURL(response.body);

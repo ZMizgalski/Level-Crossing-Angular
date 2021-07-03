@@ -1,5 +1,6 @@
 import { Component, Input } from '@angular/core';
 import { Router } from '@angular/router';
+import { CamerasModelWithSrc } from '../interfaces/CamerasModelWithSrc';
 
 @Component({
   selector: 'app-camera-element',
@@ -7,7 +8,8 @@ import { Router } from '@angular/router';
   styleUrls: ['./camera-element.component.scss'],
 })
 export class CameraElementComponent {
-  @Input() data: any;
+  @Input() data!: CamerasModelWithSrc;
+  public imgLoaded: boolean = false;
 
   constructor(private router: Router) {}
 
