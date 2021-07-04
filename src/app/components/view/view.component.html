@@ -6,6 +6,9 @@
       <p-button class="search-box__button" icon="pi pi-search"></p-button>
     </div>
   </div>
+  <div *ngIf="!contentLoaded" class="view-content-continer">
+    <h3>No Cameras found!</h3>
+  </div>
   <div *ngIf="contentLoaded" class="view-content-continer">
     <app-camera-element *ngFor="let item of camerasWithSrc" [data]="item"></app-camera-element>
   </div>

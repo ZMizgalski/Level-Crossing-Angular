@@ -1,5 +1,5 @@
 <div
-  [ngStyle]="{'width': imgLoaded ? 'unset' : '250px'}"
+  [ngStyle]="{'width': imgLoaded ? 'unset' : '250px', 'pointer-events': imgLoaded ? 'all': 'none'}"
   class="camera-elem"
   (click)="route(data.id || '')"
 >

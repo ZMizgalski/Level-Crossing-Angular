@@ -1,3 +1,4 @@
+import { LoaderService } from './components/servieces/loader/loader-service';
 import { PolygonDraw } from './components/camera-preview/polygon-draw.component';
 import { DialogService } from 'primeng/dynamicdialog';
 import { BrowserModule } from '@angular/platform-browser';
@@ -15,9 +16,11 @@ import { CalendarModule } from 'primeng/calendar';
 import { LogsDynamicDialogComponent } from './components/camera-preview/logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { TableModule } from 'primeng/table';
 import { AreasDynamicDialogComponent } from './components/camera-preview/areas-dynamic-dialog/areas-dynamic-dialog.component';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClientModule, HTTP_INTERCEPTORS } from '@angular/common/http';
 import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
+import { HttpInterceptor } from './components/servieces/loader/http-interceptor';
+import { LoaderComponent } from './components/servieces/loader/loader-component';
 
 @NgModule({
   declarations: [
@@ -25,6 +28,7 @@ import { ConfirmationService } from 'primeng/api';
     MainNavComponent,
     ViewComponent,
     CameraPreviewComponent,
+    LoaderComponent,
     CameraElementComponent,
     LogsDynamicDialogComponent,
     AreasDynamicDialogComponent,
@@ -32,7 +36,6 @@ import { ConfirmationService } from 'primeng/api';
   ],
   imports: [
     ConfirmDialogModule,
-
     BrowserModule,
     HttpClientModule,
     AppRoutingModule,
@@ -41,7 +44,12 @@ import { ConfirmationService } from 'primeng/api';
     CalendarModule,
     TableModule,
   ],
-  providers: [DialogService, ConfirmationService],
+  providers: [
+    DialogService,
+    ConfirmationService,
+    LoaderService,
+    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
+  ],
   bootstrap: [AppComponent],
   exports: [],
 })

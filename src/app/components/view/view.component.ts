@@ -16,6 +16,10 @@ export class ViewComponent implements OnInit {
   ngOnInit(): void {
     this.endpointService.getAllCameras().subscribe(value => {
       this.camerasWithoutSrc = value;
+      if (value === []) {
+        this.contentLoaded = false;
+        return;
+      }
       this.camerasWithSrc = this.camerasWithoutSrc.map(value => {
         value.id = value.id;
         value.data = value.data;

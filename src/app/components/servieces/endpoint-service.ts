@@ -5,7 +5,7 @@ import { AreaModel } from './../interfaces/areaModel';
 import { HttpClient, HttpResponse } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
-import { CameraModel } from '../interfaces/CameraModel';
+import { CameraModel } from '../interfaces/cameraModel';
 
 @Injectable({
   providedIn: 'root',

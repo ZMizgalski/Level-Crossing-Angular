@@ -118,6 +118,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   private areaEmitted: boolean = false;
   private videoTemplate!: HTMLVideoElement;
   public policyAccepted: boolean = false;
+  public windowClosed: boolean = false;
 
   constructor(
     private rd2: Renderer2,
@@ -174,6 +175,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   }
 
   private clearCanvas(intervalId: number[]): void {
+    this.windowClosed = true;
     this.ctx != undefined ? this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) : '';
     this.pointsList = [];
     this.areaEmitted = false;
@@ -205,7 +207,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       });
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.show = true;
-      this.getVideoAndSetupCanvas(true);
+      !this.windowClosed ? this.getVideoAndSetupCanvas(true) : '';
       this.response.emit(Actions.VIDEO_ENDED);
     });
     with_draw ? this.draw(false) : '';
