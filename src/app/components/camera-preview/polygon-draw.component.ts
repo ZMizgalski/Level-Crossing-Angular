@@ -11,6 +11,7 @@ export enum Actions {
    AREA_SELECTED = 1,
    NOT_ENOUGHT_POINTS = 2,
    VIDEO_NOT_FOUND = 3,
+   POLICY_ACCEPTED = 4,
 }
 
 @Component({
@@ -194,6 +195,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          accept: () => {
             this.policyAccepted = true;
             this.createVideoAndWaitForPolicy();
+            this.response.emit(Actions.POLICY_ACCEPTED);
          },
          reject: () => {
             this.policyAccepted = false;
@@ -203,6 +205,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    }
 
    private createVideoAndWaitForPolicy(): void {
+      this.drawingEnabled ? this.clearCanvas(this.intervalId) : '';
       this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
          (response: HttpResponse<Blob>) => {
             this.videoTemplate = document.createElement('video');
@@ -318,7 +321,6 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       }
       const area = { id: this.id || '', area: { areaName: 'elo222', pointsList: this.pointsList } };
       !this.areaSelected ? this.areas.push(area) : '';
-      console.log(this.areas);
       $event.preventDefault();
       this.areaSelected = true;
       this.drawingEnabled = false;

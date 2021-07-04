@@ -1,6 +1,6 @@
 import { AreaModel } from './../../interfaces/areaModel';
 import { Component } from '@angular/core';
-import { DynamicDialogConfig } from 'primeng/dynamicdialog';
+import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 
 @Component({
    selector: 'app-areas-dynamic-dialog',
@@ -10,13 +10,25 @@ import { DynamicDialogConfig } from 'primeng/dynamicdialog';
 export class AreasDynamicDialogComponent {
    areas!: AreaModel[];
    loading: boolean = true;
+   htmlRef?: DynamicDialogRef;
 
-   constructor(private config: DynamicDialogConfig) {
+   constructor(private config: DynamicDialogConfig, public ref: DynamicDialogRef) {
       this.areas = config.data;
       this.loading = false;
    }
 
-   public editArea(id: string): void {}
+   public addArea(): void {
+      const response = { result: '', areaName: '', delete: false, addNew: true };
+      this.ref.close(response);
+   }
 
-   public deleteArea(id: string): void {}
+   public editArea(id: string, areaName: string): void {
+      const response = { result: id, areaName: areaName, delete: false, addNew: false };
+      this.ref.close(response);
+   }
+
+   public deleteArea(id: string, areaName: string): void {
+      const response = { result: id, areaName: areaName, delete: true, addNew: false };
+      this.ref.close(response);
+   }
 }

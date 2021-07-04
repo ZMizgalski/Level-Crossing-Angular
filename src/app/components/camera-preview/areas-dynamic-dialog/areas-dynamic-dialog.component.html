@@ -13,6 +13,14 @@
             <p class="header-tr-th__text">Area Name</p>
          </th>
          <th class="header-tr-th">
+            <button
+               pButton
+               pRipple
+               type="button"
+               (click)="addArea()"
+               icon="pi pi-pencil"
+               class="body-tr-td-button-container__button p-button-rounded p-button-text"
+            ></button>
             <p class="header-tr-th__text">Action</p>
          </th>
       </tr>
@@ -29,14 +37,14 @@
                   pButton
                   pRipple
                   type="button"
-                  (click)="editArea(area.id)"
+                  (click)="editArea(area.id, area.area.areaName)"
                   icon="pi pi-pencil"
                   class="body-tr-td-button-container__button p-button-rounded p-button-text"
                ></button>
                <button
                   pButton
                   pRipple
-                  (click)="deleteArea(area.id)"
+                  (click)="deleteArea(area.id, area.area.areaName)"
                   type="button"
                   icon="pi pi-times"
                   class="body-tr-td-button-container__button p-button-rounded p-button-text p-button-danger"

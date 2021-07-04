@@ -1,3 +1,4 @@
+import { Actions } from './polygon-draw.component';
 import { EndpointService } from './../servieces/endpoint-service';
 import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
@@ -6,132 +7,176 @@ import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/co
 import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LogsModel } from '../interfaces/logsModel';
+import { AreasDialogResponseModel } from '../interfaces/areasDialogResponseModel';
 
 @Component({
-  selector: 'app-camera-preview',
-  templateUrl: './camera-preview.component.html',
-  styleUrls: ['./camera-preview.component.scss'],
+   selector: 'app-camera-preview',
+   templateUrl: './camera-preview.component.html',
+   styleUrls: ['./camera-preview.component.scss'],
 })
 export class CameraPreviewComponent implements OnInit, OnDestroy {
-  @ViewChild('video') public video!: ElementRef;
-  public date!: Date;
-  public date2!: Date;
-  public htmlRef!: DynamicDialogRef;
-  public id?: string;
+   @ViewChild('video') public video!: ElementRef;
+   public date!: Date;
+   public date2!: Date;
+   public areasDialog!: DynamicDialogRef;
+   public logsDialog!: DynamicDialogRef;
+   public id?: string;
+   public policyAccteped: boolean = false;
+   public enableDrawing: boolean = false;
 
-  constructor(
-    private route: ActivatedRoute,
-    public dialogService: DialogService,
-    private endpointService: EndpointService
-  ) {}
+   constructor(private route: ActivatedRoute, public dialogService: DialogService, private endpointService: EndpointService) {}
 
-  areas: AreaModel[] = [
-    {
-      id: '75ca669a-c26c-4dc2-987e-029351a7338d',
-      area: {
-        areaName: 'elo1',
-        pointsList: [
-          { x: 136, y: 142.359375 },
-          { x: 237, y: 293.359375 },
-          { x: 542, y: 287.359375 },
-          { x: 514, y: 94.359375 },
-          { x: 327, y: 73.359375 },
-        ],
+   areas: AreaModel[] = [
+      {
+         id: '66efa687-14e2-4bba-b35c-6221ff0a028d',
+         area: {
+            areaName: 'elo1',
+            pointsList: [
+               { x: 136, y: 142.359375 },
+               { x: 237, y: 293.359375 },
+               { x: 542, y: 287.359375 },
+               { x: 514, y: 94.359375 },
+               { x: 327, y: 73.359375 },
+            ],
+         },
       },
-    },
-    {
-      id: '75ca669a-c26c-4dc2-987e-029351a7338a',
-      area: {
-        areaName: 'elo2',
-        pointsList: [
-          { x: 80, y: 116.359375 },
-          { x: 18, y: 364.359375 },
-          { x: 85, y: 394.359375 },
-          { x: 197, y: 326.359375 },
-          { x: 71, y: 190.359375 },
-        ],
+      {
+         id: '66efa687-14e2-4bba-b35c-6221ff0a028d',
+         area: {
+            areaName: 'elo2',
+            pointsList: [
+               { x: 80, y: 116.359375 },
+               { x: 18, y: 364.359375 },
+               { x: 85, y: 394.359375 },
+               { x: 197, y: 326.359375 },
+               { x: 71, y: 190.359375 },
+            ],
+         },
       },
-    },
-    {
-      id: '75ca669a-c26c-4dc2-987e-029351a7338m',
-      area: {
-        areaName: 'elo3',
-        pointsList: [
-          { x: 258, y: 81.359375 },
-          { x: 324, y: 79.359375 },
-          { x: 456, y: 83.359375 },
-          { x: 557, y: 112.359375 },
-          { x: 504, y: 133.359375 },
-          { x: 350, y: 109.359375 },
-        ],
+      {
+         id: '66efa687-14e2-4bba-b35c-6221ff0a028d',
+         area: {
+            areaName: 'elo3',
+            pointsList: [
+               { x: 258, y: 81.359375 },
+               { x: 324, y: 79.359375 },
+               { x: 456, y: 83.359375 },
+               { x: 557, y: 112.359375 },
+               { x: 504, y: 133.359375 },
+               { x: 350, y: 109.359375 },
+            ],
+         },
       },
-    },
-  ];
+   ];
 
-  logs: LogsModel[] = [
-    { filename: 'elo.mp4', time: '12_12_12' },
-    { filename: 'elo.mp4', time: '12_12_12' },
-    { filename: 'elo.mp4', time: '12_12_12' },
-    { filename: 'elo.mp4', time: '12_12_12' },
-    { filename: 'elo.mp4', time: '12_12_12' },
-    { filename: 'elo.mp4', time: '12_12_12' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-    { filename: 'elo.mp4', time: '11_13_14' },
-  ];
+   logs: LogsModel[] = [
+      { filename: 'elo.mp4', time: '12_12_12' },
+      { filename: 'elo.mp4', time: '12_12_12' },
+      { filename: 'elo.mp4', time: '12_12_12' },
+      { filename: 'elo.mp4', time: '12_12_12' },
+      { filename: 'elo.mp4', time: '12_12_12' },
+      { filename: 'elo.mp4', time: '12_12_12' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+      { filename: 'elo.mp4', time: '11_13_14' },
+   ];
 
-  ngOnInit(): void {
-    this.id = this.gedIdFromRoute() || '';
-    this.endpointService.getCameraById(this.id).subscribe(
-      value => {
-        console.log(value);
-      },
-      error => {
-        console.log(error);
+   private gedIdFromRoute(): string | null {
+      return this.route.snapshot.paramMap.get('id');
+   }
+
+   ngOnInit(): void {
+      this.id = this.gedIdFromRoute() || '';
+      this.endpointService.getCameraById(this.id).subscribe(
+         value => {
+            console.log(value);
+         },
+         error => {
+            console.log(error);
+         }
+      );
+   }
+
+   ngOnDestroy() {
+      if (this.areasDialog) {
+         this.areasDialog.close();
       }
-    );
-  }
+      if (this.logsDialog) {
+         this.logsDialog.close();
+      }
+   }
 
-  ngOnDestroy() {
-    if (this.htmlRef) {
-      this.htmlRef.close();
-    }
-  }
+   public showLogsDialog(): void {
+      this.logsDialog = this.dialogService.open(LogsDynamicDialogComponent, {
+         data: this.logs,
+         header: 'Logs Table',
+         width: '70%',
+         contentStyle: { 'max-height': '500px', overflow: 'auto', padding: '0' },
+         baseZIndex: 10000,
+      });
 
-  public showLogsDialog(): void {
-    this.htmlRef = this.dialogService.open(LogsDynamicDialogComponent, {
-      data: this.logs,
-      header: 'Logs Table',
-      width: '70%',
-      contentStyle: { 'max-height': '500px', overflow: 'auto', padding: '0' },
-      baseZIndex: 10000,
-    });
-  }
+      this.logsDialog.onClose.subscribe(value => {
+         console.log(value);
+      });
+   }
 
-  public showAreasDialog(): void {
-    this.htmlRef = this.dialogService.open(AreasDynamicDialogComponent, {
-      data: this.areas,
-      header: 'Areas Table',
-      width: '70%',
-      contentStyle: { 'max-height': '500px', overflow: 'auto', padding: '0' },
-      baseZIndex: 10000,
-    });
-  }
+   public showAreasDialog(): void {
+      this.areasDialog = this.dialogService.open(AreasDynamicDialogComponent, {
+         data: this.areas,
+         header: 'Areas Table',
+         width: '70%',
+         contentStyle: { 'max-height': '500px', overflow: 'auto', padding: '0' },
+         baseZIndex: 10000,
+      });
 
-  private gedIdFromRoute(): string | null {
-    return this.route.snapshot.paramMap.get('id');
-  }
+      this.areasDialog.onClose.subscribe((value: AreasDialogResponseModel) => {
+         this.areas.forEach((area: AreaModel, index: number) => {
+            if (value.addNew === true) {
+               console.log('elo');
+               this.enableDrawing = true;
+            }
+            if (area.id === value.result && area.area?.areaName === value.areaName) {
+               value.delete ? this.deleteArea(index, area) : this.updateArea(index, area);
+            }
+         });
+      });
+   }
 
-  public previousCamera(): void {}
+   private updateArea(index: number, area: AreaModel): void {
+      this.areas.splice(index, 1);
+      this.endpointService.updateArea(area).subscribe(
+         response => {
+            console.log(response);
+         },
+         error => {
+            console.log(error);
+         }
+      );
+   }
 
-  public nextCamera(): void {}
+   private deleteArea(index: number, area: AreaModel): void {
+      this.areas.splice(index, 1);
+      const deleteArea = { id: area.id, areaName: area.area?.areaName };
+      this.endpointService.deleteArea(deleteArea).subscribe(
+         response => {
+            console.log(response);
+         },
+         error => {
+            console.log(error);
+         }
+      );
+   }
 
-  public polygonResponse($event: any): void {
-    console.log($event);
-  }
+   public previousCamera(): void {}
+
+   public nextCamera(): void {}
+
+   public polygonResponse($event: any): void {
+      $event == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
+   }
 }

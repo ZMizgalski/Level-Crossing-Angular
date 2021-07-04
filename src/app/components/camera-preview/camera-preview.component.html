@@ -7,7 +7,7 @@
             selectedAreaBorderColor="#000000"
             lineColor="#000000"
             lineWidth="3"
-            [drawingEnabled]="true"
+            [drawingEnabled]="enableDrawing"
             [id]="this.id"
             [areas]="areas"
             (response)="polygonResponse($event)"
@@ -33,13 +33,27 @@
                class="preview-camera-actions-shading__button p-button-rounded p-button-secondary p-button-text"
             ></button>
             <div class="actions-data-picker-box">
-               <p-calendar [touchUI]="true" [showTime]="true" [(ngModel)]="date" [showIcon]="true" [showButtonBar]="true"></p-calendar>
-               <p-calendar [(ngModel)]="date2" [showIcon]="true" icon="pi pi-filter" [timeOnly]="true"></p-calendar>
+               <p-calendar
+                  [disabled]="!policyAccteped"
+                  [touchUI]="true"
+                  [showTime]="true"
+                  [(ngModel)]="date"
+                  [showIcon]="true"
+                  [showButtonBar]="true"
+               ></p-calendar>
+               <p-calendar
+                  [disabled]="!policyAccteped"
+                  [(ngModel)]="date2"
+                  [showIcon]="true"
+                  icon="pi pi-filter"
+                  [timeOnly]="true"
+               ></p-calendar>
 
                <div class="actions-data-picker-box-container">
                   <button
                      pButton
                      pRipple
+                     [disabled]="!policyAccteped"
                      (click)="showLogsDialog()"
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
@@ -48,6 +62,7 @@
                   <button
                      pButton
                      pRipple
+                     [disabled]="!policyAccteped"
                      (click)="showAreasDialog()"
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
