@@ -1,3 +1,4 @@
+import { LoaderService } from './../servieces/loader/loader-service';
 import { ConfirmationService } from 'primeng/api';
 import { EndpointService } from './../servieces/endpoint-service';
 import {
@@ -109,7 +110,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   @Output() public response = new EventEmitter();
   @ViewChild('polygon') private polygon!: ElementRef;
   @ViewChild('polygonContainer') private polygonContainer!: ElementRef;
-  public show: boolean = true;
+  public show: boolean = false;
   private pointsList: any = [];
   private canvas: any;
   private ctx: any;
@@ -117,20 +118,22 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
   private areaSelected: boolean = false;
   private areaEmitted: boolean = false;
   private videoTemplate!: HTMLVideoElement;
-  public policyAccepted: boolean = false;
+  public policyAccepted: boolean = true;
   public windowClosed: boolean = false;
-
   constructor(
     private rd2: Renderer2,
     private endpointService: EndpointService,
-    private confirmationService: ConfirmationService
+    private confirmationService: ConfirmationService,
+    private loaderService: LoaderService
   ) {}
 
   ngOnDestroy(): void {
     this.clearCanvas(this.intervalId);
+    this.loaderService.forceHide = false;
   }
 
   ngAfterViewInit(): void {
+    this.loaderService.forceHide = true;
     this.getVideoAndSetupCanvas(false);
   }
 
@@ -151,20 +154,25 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
     });
   }
 
+  private createVideoAndWaitForPolicy(response: HttpResponse<Blob>): void {
+    this.videoTemplate = document.createElement('video');
+    this.videoTemplate.src = URL.createObjectURL(response.body);
+    this.videoTemplate.autoplay = true;
+    const promise = this.videoTemplate.play();
+    if (promise !== undefined) {
+      promise.catch(() => {
+        this.policyAccepted = false;
+        this.acceptCrossPolicy();
+      });
+    }
+    this.policyAccepted = true;
+  }
+
   private getVideoAndSetupCanvas(with_draw: boolean): void {
     this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
       (response: HttpResponse<Blob>) => {
-        this.videoTemplate = document.createElement('video');
-        this.videoTemplate.src = URL.createObjectURL(response.body);
-        this.videoTemplate.autoplay = true;
-        const promise = this.videoTemplate.play();
-        if (promise !== undefined) {
-          promise.catch(() => {
-            this.policyAccepted = false;
-            this.acceptCrossPolicy();
-          });
-        }
-        this.policyAccepted = true;
+        this.createVideoAndWaitForPolicy(response);
+        this.show = true;
         this.prepareCanvas(with_draw);
       },
       error => {
@@ -201,12 +209,13 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.intervalId.push(this.setIntervalAndReturnId());
       this.show = false;
     }
+
     this.videoTemplate?.addEventListener('ended', () => {
       this.intervalId.forEach(id => {
         window.clearInterval(id);
       });
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.show = true;
+      this.show = false;
       !this.windowClosed ? this.getVideoAndSetupCanvas(true) : '';
       this.response.emit(Actions.VIDEO_ENDED);
     });

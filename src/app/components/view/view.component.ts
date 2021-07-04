@@ -1,5 +1,6 @@
+import { LoaderService } from './../servieces/loader/loader-service';
 import { EndpointService } from './../servieces/endpoint-service';
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { CamerasWithSrc } from '../interfaces/camerasWithSrc';
 
 @Component({
@@ -7,13 +8,14 @@ import { CamerasWithSrc } from '../interfaces/camerasWithSrc';
   templateUrl: './view.component.html',
   styleUrls: ['./view.component.scss'],
 })
-export class ViewComponent implements OnInit {
+export class ViewComponent implements OnInit, OnDestroy {
   @ViewChild('searchBar') public searchBox!: ElementRef;
   public contentLoaded: boolean = false;
-  constructor(private endpointService: EndpointService) {}
   private camerasWithoutSrc: any[] = [];
   public camerasWithSrc: CamerasWithSrc[] = [];
   public camerasData: CamerasWithSrc[] = [];
+
+  constructor(private endpointService: EndpointService, private loaderService: LoaderService) {}
 
   public onKey(boxValue: string): void {
     if (boxValue === '') {
@@ -27,7 +29,12 @@ export class ViewComponent implements OnInit {
     });
   }
 
+  ngOnDestroy(): void {
+    this.loaderService.forceHide = false;
+  }
+
   ngOnInit(): void {
+    this.loaderService.forceHide = true;
     this.endpointService.getAllCameras().subscribe(value => {
       this.camerasWithoutSrc = value;
       if (value === []) {

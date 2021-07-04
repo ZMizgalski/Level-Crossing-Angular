@@ -10,12 +10,7 @@
     <div *ngIf="!imgLoaded " class="camera-elem-img-container-icon-container">
       <i class="pi pi-spin pi-spinner"></i>
     </div>
-    <img
-      (load)="imgLoaded = !imgLoaded"
-      *ngIf="data.src != null"
-      [src]="data.src"
-      class="camera-elem-img-container__img"
-    />
+    <img *ngIf="imgLoaded" [src]="imgSrc" class="camera-elem-img-container__img" />
   </div>
   <div class="camera-elem-content">
     <p class="camera-elem-content__p">{{ data.data }}</p>
