@@ -1,56 +1,53 @@
 <p-table
-  [value]="logs"
-  [rowHover]="true"
-  [rows]="10"
-  [loading]="loading"
-  [showCurrentPageReport]="true"
-  [globalFilterFields]="['time', 'logs.time']"
-  styleClass="p-datatable-responsive-demo"
+   [value]="areas"
+   [rowHover]="true"
+   [rows]="10"
+   [loading]="loading"
+   [showCurrentPageReport]="true"
+   [globalFilterFields]="['time', 'logs.time']"
+   styleClass="p-datatable-responsive-demo"
 >
-  <ng-template pTemplate="header">
-    <tr class="header-tr">
-      <th class="header-tr-th">
-        <p class="header-tr-th__text">Area Name</p>
-      </th>
-      <th class="header-tr-th">
-        <p class="header-tr-th__text">Action</p>
-      </th>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="body" let-area>
-    <tr class="body-tr">
-      <td class="body-tr-td">
-        <p>Area Name:</p>
-        {{ area.area.areaName }}
-      </td>
-      <td>
-        <div class="body-tr-td-button-container">
-          <button
-            pButton
-            pRipple
-            type="button"
-            (click)="editArea()"
-            icon="pi pi-pencil"
-            class="body-tr-td-button-container__button p-button-rounded p-button-text"
-          ></button>
-          <button
-            pButton
-            pRipple
-            (click)="deleteArea()"
-            type="button"
-            icon="pi pi-times"
-            class="
-              body-tr-td-button-container__button
-              p-button-rounded p-button-text p-button-danger
-            "
-          ></button>
-        </div>
-      </td>
-    </tr>
-  </ng-template>
-  <ng-template pTemplate="emptymessage">
-    <tr>
-      <td style="text-align: center" colspan="1">No Areas found.</td>
-    </tr>
-  </ng-template>
+   <ng-template pTemplate="header">
+      <tr class="header-tr">
+         <th class="header-tr-th">
+            <p class="header-tr-th__text">Area Name</p>
+         </th>
+         <th class="header-tr-th">
+            <p class="header-tr-th__text">Action</p>
+         </th>
+      </tr>
+   </ng-template>
+   <ng-template pTemplate="body" let-area>
+      <tr class="body-tr">
+         <td class="body-tr-td">
+            <p>Area Name:</p>
+            {{ area.area.areaName }}
+         </td>
+         <td>
+            <div class="body-tr-td-button-container">
+               <button
+                  pButton
+                  pRipple
+                  type="button"
+                  (click)="editArea(area.id)"
+                  icon="pi pi-pencil"
+                  class="body-tr-td-button-container__button p-button-rounded p-button-text"
+               ></button>
+               <button
+                  pButton
+                  pRipple
+                  (click)="deleteArea(area.id)"
+                  type="button"
+                  icon="pi pi-times"
+                  class="body-tr-td-button-container__button p-button-rounded p-button-text p-button-danger"
+               ></button>
+            </div>
+         </td>
+      </tr>
+   </ng-template>
+   <ng-template pTemplate="emptymessage">
+      <tr>
+         <td style="text-align: center" colspan="1">No Areas found.</td>
+      </tr>
+   </ng-template>
 </p-table>

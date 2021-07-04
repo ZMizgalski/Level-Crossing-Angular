@@ -1,327 +1,327 @@
+import { AreaModel, Point } from './../interfaces/areaModel';
 import { LoaderService } from './../servieces/loader/loader-service';
 import { ConfirmationService } from 'primeng/api';
 import { EndpointService } from './../servieces/endpoint-service';
-import {
-  Input,
-  Output,
-  Renderer2,
-  EventEmitter,
-  ViewChild,
-  ElementRef,
-  AfterViewInit,
-} from '@angular/core';
+import { Input, Output, Renderer2, EventEmitter, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Component, OnDestroy } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
 
 export enum Actions {
-  VIDEO_ENDED = 0,
-  AREA_SELECTED = 1,
-  NOT_ENOUGHT_POINTS = 2,
-  VIDEO_NOT_FOUND = 3,
+   VIDEO_ENDED = 0,
+   AREA_SELECTED = 1,
+   NOT_ENOUGHT_POINTS = 2,
+   VIDEO_NOT_FOUND = 3,
 }
 
 @Component({
-  selector: 'polygon-draw',
-  template: `
-    <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
-    <div #polygonContainer class="polygon-container" (mousedown)="selectPoint($event)">
-      <div *ngIf="!show" class="polygon-container-spinner">
-        <i class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
-        <button
-          *ngIf="!policyAccepted"
-          class="polygon-container-spinner__button"
-          pButton
-          label="Accept"
-          icon="pi pi-check"
-          (click)="acceptCrossPolicy()"
-        ></button>
+   selector: 'polygon-draw',
+   template: `
+      <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+      <div #polygonContainer class="polygon-container" (mousedown)="selectPoint($event)">
+         <div class="polygon-container-spinner">
+            <i *ngIf="!videoLoaded && policyAccepted" class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
+            <button
+               *ngIf="!policyAccepted"
+               class="polygon-container-spinner__button"
+               pButton
+               label="Accept"
+               icon="pi pi-check"
+               (click)="acceptCrossPolicy()"
+            ></button>
+         </div>
+         <canvas
+            [ngStyle]="{ 'pointer-events': drawingEnabled ? 'all' : 'none' }"
+            class="polygon-container__canvas"
+            #polygon
+            style="max-width: 100%;"
+            width="{{ width || '640' }}"
+            height="{{ height || '480' }}"
+            oncontextmenu="return false;"
+         >
+            Your browser not supports canvas</canvas
+         >
       </div>
-      <canvas
-        class="polygon-container__canvas"
-        #polygon
-        style="max-width: 100%;"
-        width="{{ width || '640' }}"
-        height="{{ height || '480' }}"
-        oncontextmenu="return false;"
-      >
-        Your browser not supports canvas</canvas
-      >
-    </div>
-  `,
-  styles: [
-    `
-      @import '../colors.scss';
-      @import '../fonts.scss';
+   `,
+   styles: [
+      `
+         @import '../colors.scss';
+         @import '../fonts.scss';
 
-      @media screen and (max-width: 450px) {
-        .polygon-container-spinner__icon {
-          font-size: $font-size-small !important;
-        }
-      }
+         @media screen and (max-width: 450px) {
+            .polygon-container-spinner__icon {
+               font-size: $font-size-small !important;
+            }
+         }
 
-      .polygon-container {
-        height: 100%;
-        width: 100%;
-        display: flex;
-        position: relative;
-        background: black;
-        border-radius: 5px;
+         .polygon-container {
+            height: 100%;
+            width: 100%;
+            display: flex;
+            position: relative;
+            background: black;
+            border-radius: 5px;
 
-        &-spinner {
-          display: flex;
-          flex-direction: column;
-          align-items: center;
-          justify-content: center;
-          position: absolute;
-          top: 50%;
-          pointer-events: none;
-          left: 50%;
-          transform: translate(-50%, -50%);
-          background: transparent;
-          &__icon {
-            font-size: $font-size-big;
-            transition: 0.2s ease;
-            color: $Brighter-Blue;
-            padding: 10px;
-            background: transparent;
-          }
+            &-spinner {
+               display: flex;
+               flex-direction: column;
+               align-items: center;
+               justify-content: center;
+               position: absolute;
+               top: 50%;
+               pointer-events: none;
+               left: 50%;
+               transform: translate(-50%, -50%);
+               background: transparent;
+               &__icon {
+                  font-size: $font-size-big;
+                  transition: 0.2s ease;
+                  color: $Brighter-Blue;
+                  padding: 10px;
+                  background: transparent;
+               }
 
-          &__button {
-            pointer-events: all;
-          }
-        }
+               &__button {
+                  pointer-events: all;
+               }
+            }
 
-        &__canvas {
-          border-radius: inherit;
-          cursor: crosshair;
-        }
-      }
-    `,
-  ],
+            &__canvas {
+               border-radius: inherit;
+               cursor: crosshair;
+            }
+         }
+      `,
+   ],
 })
 export class PolygonDraw implements AfterViewInit, OnDestroy {
-  @Input() public selectedAreaColor?: string;
-  @Input() public lineWidth?: string;
-  @Input() public selectedAreaBorderColor?: string;
-  @Input() public lineColor?: string;
-  @Input() public id?: string;
-  @Input() public height?: string;
-  @Input() public width?: string;
-  @Output() public response = new EventEmitter();
-  @ViewChild('polygon') private polygon!: ElementRef;
-  @ViewChild('polygonContainer') private polygonContainer!: ElementRef;
-  public show: boolean = false;
-  private pointsList: any = [];
-  private canvas: any;
-  private ctx: any;
-  private intervalId: number[] = [];
-  private areaSelected: boolean = false;
-  private areaEmitted: boolean = false;
-  private videoTemplate!: HTMLVideoElement;
-  public policyAccepted: boolean = true;
-  public windowClosed: boolean = false;
-  constructor(
-    private rd2: Renderer2,
-    private endpointService: EndpointService,
-    private confirmationService: ConfirmationService,
-    private loaderService: LoaderService
-  ) {}
+   @Input() public areas: AreaModel[] = [];
+   @Input() public selectedAreaColor?: string;
+   @Input() public lineWidth?: string;
+   @Input() public selectedAreaBorderColor?: string;
+   @Input() public lineColor?: string;
+   @Input() public id?: string;
+   @Input() public height?: string;
+   @Input() public width?: string;
+   @Input() public drawingEnabled: boolean = false;
+   @Output() public response = new EventEmitter();
+   @ViewChild('polygon') private polygon!: ElementRef;
+   @ViewChild('polygonContainer') private polygonContainer!: ElementRef;
+   public videoLoaded: boolean = false;
+   private pointsList: any[] = [];
+   private canvas: any;
+   private ctx: any;
+   private intervalId: number[] = [];
+   private areaSelected: boolean = false;
+   private areaEmitted: boolean = false;
+   private videoTemplate!: HTMLVideoElement;
+   public policyAccepted: boolean = false;
+   public windowClosed: boolean = false;
+   constructor(
+      private rd2: Renderer2,
+      private endpointService: EndpointService,
+      private confirmationService: ConfirmationService,
+      private loaderService: LoaderService,
+      private cdr: ChangeDetectorRef
+   ) {}
 
-  ngOnDestroy(): void {
-    this.clearCanvas(this.intervalId);
-    this.loaderService.forceHide = false;
-  }
+   private closeFigureAndFill(points: Point[]): void {
+      const selectedAreaColor = this.selectedAreaColor == undefined ? 'rgba(255, 0, 0, 0.5)' : this.selectedAreaColor;
+      const selectedAreaBorderColor = this.selectedAreaBorderColor == undefined ? 'blue' : this.selectedAreaBorderColor;
+      this.ctx.lineTo(points[0]['x'], points[0]['y']);
+      this.ctx.closePath();
+      this.ctx.fillStyle = selectedAreaColor;
+      this.ctx.fill();
+      this.ctx.strokeStyle = selectedAreaBorderColor;
+      this.areaSelected = true;
+      this.ctx.stroke();
+   }
 
-  ngAfterViewInit(): void {
-    this.loaderService.forceHide = true;
-    this.getVideoAndSetupCanvas(false);
-  }
-
-  private checkIfCanvasIsBlank(canvas: any): boolean {
-    return !canvas
-      .getContext('2d')
-      .getImageData(0, 0, canvas.width, canvas.height)
-      .data.some((channel: number) => channel !== 0);
-  }
-
-  public acceptCrossPolicy(): void {
-    this.confirmationService.confirm({
-      message: 'To access video playback you need to accept Cross-Policy requirements',
-      accept: () => {
-        this.videoTemplate.play();
-        this.policyAccepted = true;
-      },
-    });
-  }
-
-  private createVideoAndWaitForPolicy(response: HttpResponse<Blob>): void {
-    this.videoTemplate = document.createElement('video');
-    this.videoTemplate.src = URL.createObjectURL(response.body);
-    this.videoTemplate.autoplay = true;
-    const promise = this.videoTemplate.play();
-    if (promise !== undefined) {
-      promise.catch(() => {
-        this.policyAccepted = false;
-        this.acceptCrossPolicy();
-      });
-    }
-    this.policyAccepted = true;
-  }
-
-  private getVideoAndSetupCanvas(with_draw: boolean): void {
-    this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
-      (response: HttpResponse<Blob>) => {
-        this.createVideoAndWaitForPolicy(response);
-        this.show = true;
-        this.prepareCanvas(with_draw);
-      },
-      error => {
-        console.log(error);
-        return;
+   private drawLines(points: Point[]): void {
+      const color = this.lineColor == undefined ? 'white' : this.lineColor;
+      const lineWidth = this.lineWidth == undefined ? 3 : Number(this.lineWidth);
+      this.ctx.lineWidth = lineWidth;
+      this.ctx.strokeStyle = color;
+      this.ctx.lineCap = 'square';
+      this.ctx.beginPath();
+      for (let i = 0; i < points.length; i++) {
+         console.log();
+         i == 0 ? this.ctx.moveTo(points[i]['x'], points[i]['y']) : this.ctx.lineTo(points[i]['x'], points[i]['y']);
       }
-    );
-  }
+      this.ctx.stroke();
+   }
 
-  private clearCanvas(intervalId: number[]): void {
-    this.windowClosed = true;
-    this.ctx != undefined ? this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) : '';
-    this.pointsList = [];
-    this.areaEmitted = false;
-    this.areaSelected = false;
-    intervalId.forEach(id => {
-      window.clearInterval(id);
-    });
-  }
+   private drawEachArea(areas: AreaModel[]): void {
+      if (areas !== []) {
+         areas.forEach((area: AreaModel) => {
+            if (area.area?.pointsList !== undefined) {
+               this.drawLines(area.area.pointsList);
+               this.closeFigureAndFill(area.area.pointsList);
+            }
+         });
+      }
+   }
 
-  private setIntervalAndReturnId(): number {
-    const id = window.setInterval(() => {
-      this.ctx = this.canvas.getContext('2d');
-      this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
-      this.areaSelected ? this.draw(true) : this.draw(false);
-      this.checkIfCanvasIsBlank(this.canvas) ? (this.show = false) : (this.show = true);
-    }, 200);
-    return id;
-  }
+   private clearCanvas(intervalId: number[]): void {
+      this.videoLoaded = false;
+      this.windowClosed = true;
+      this.ctx != undefined ? this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) : '';
+      this.pointsList = [];
+      this.areaEmitted = false;
+      this.areaSelected = false;
+      this.clearAllIntervals(intervalId);
+   }
 
-  private prepareCanvas(with_draw: boolean): void {
-    this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
-    if (this.show) {
+   private clearAllIntervals(intervalList: number[]): void {
+      intervalList.forEach(id => {
+         window.clearInterval(id);
+      });
+   }
+
+   ngOnDestroy(): void {
+      this.clearCanvas(this.intervalId);
+      this.loaderService.forceHide = false;
+   }
+
+   ngAfterViewInit(): void {
+      this.loaderService.forceHide = true;
+      this.acceptCrossPolicy();
+      this.cdr.detectChanges();
+   }
+
+   public acceptCrossPolicy(): void {
+      this.confirmationService.confirm({
+         message: 'To access video playback you need to accept Cross-Policy requirements',
+         accept: () => {
+            this.policyAccepted = true;
+            this.createVideoAndWaitForPolicy();
+         },
+         reject: () => {
+            this.policyAccepted = false;
+            return;
+         },
+      });
+   }
+
+   private createVideoAndWaitForPolicy(): void {
+      this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
+         (response: HttpResponse<Blob>) => {
+            this.videoTemplate = document.createElement('video');
+            this.videoTemplate.src = URL.createObjectURL(response.body);
+            this.videoTemplate.autoplay = true;
+            this.prepareCanvas();
+         },
+         () => {
+            this.clearAllIntervals(this.intervalId);
+            this.policyAccepted = false;
+            this.videoLoaded = false;
+            return;
+         }
+      );
+   }
+
+   private prepareCanvas(): void {
+      this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
       this.intervalId.push(this.setIntervalAndReturnId());
-      this.show = false;
-    }
+      this.onVideoEnd();
+   }
 
-    this.videoTemplate?.addEventListener('ended', () => {
-      this.intervalId.forEach(id => {
-        window.clearInterval(id);
+   private onVideoEnd(): void {
+      this.videoTemplate?.addEventListener('ended', () => {
+         this.clearAllIntervals(this.intervalId);
+         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+         this.videoLoaded = false;
+         !this.windowClosed ? this.createVideoAndWaitForPolicy() : '';
+         this.response.emit(Actions.VIDEO_ENDED);
       });
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.show = false;
-      !this.windowClosed ? this.getVideoAndSetupCanvas(true) : '';
-      this.response.emit(Actions.VIDEO_ENDED);
-    });
-    with_draw ? this.draw(false) : '';
-  }
+   }
 
-  private extractScaleFromParentElement(): { scaleX: Number; scaleY: Number } {
-    const polygonContainer = this.polygonContainer.nativeElement.getBoundingClientRect();
-    return {
-      scaleX: Number((polygonContainer.width / this.canvas.width).toFixed(2)),
-      scaleY: Number((polygonContainer.height / this.canvas.height).toFixed(2)),
-    };
-  }
+   private setIntervalAndReturnId(): number {
+      const id = window.setInterval(() => {
+         this.ctx = this.canvas.getContext('2d');
+         this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
+         this.drawingEnabled ? this.drawOneAreaOnSelect(this.pointsList) : this.drawEachArea(this.areas);
+         this.checkIfCanvasIsBlank(this.canvas) ? (this.videoLoaded = false) : (this.videoLoaded = true);
+      }, 200);
+      return id;
+   }
 
-  private draw(end: boolean): void {
-    const color = this.lineColor == undefined ? 'white' : this.lineColor;
-    const lineWidth = this.lineWidth == undefined ? 3 : Number(this.lineWidth);
-    this.ctx.lineWidth = lineWidth;
-    this.ctx.strokeStyle = color;
-    this.ctx.lineCap = 'square';
-    this.ctx.beginPath();
-    this.drawLinesToSelectedPoints(end);
-    end ? this.fillSelectedPolygon() : '';
-    this.ctx.stroke();
-  }
+   private drawOneAreaOnSelect(area: Point[]): void {
+      this.areaSelected ? this.closeFigureAndFill(area) : this.drawLines(area);
+   }
 
-  private drawRectOnClick(x: number, y: number) {
-    const color = this.lineColor == undefined ? 'white' : this.lineColor;
-    this.ctx.fillStyle = color;
-    this.ctx.strokeStyle = color;
-    this.ctx.fillRect(x - 2, y - 2, 4, 4);
-    this.ctx.moveTo(x, y);
-  }
+   private checkIfCanvasIsBlank(canvas: any): boolean {
+      return !canvas
+         .getContext('2d')
+         .getImageData(0, 0, canvas.width, canvas.height)
+         .data.some((channel: number) => channel !== 0);
+   }
 
-  private drawLinesToSelectedPoints(end: boolean): void {
-    for (let i = 0; i < this.pointsList.length; i++) {
-      if (i == 0) {
-        this.ctx.moveTo(this.pointsList[i]['x'], this.pointsList[i]['y']);
-        end || this.drawRectOnClick(this.pointsList[i]['x'], this.pointsList[i]['y']);
-      } else {
-        this.ctx.lineTo(this.pointsList[i]['x'], this.pointsList[i]['y']);
-        end || this.drawRectOnClick(this.pointsList[i]['x'], this.pointsList[i]['y']);
+   public selectPoint($event: any): boolean {
+      if (!this.drawingEnabled) {
+         return false;
       }
-    }
-  }
+      if (!this.videoLoaded) {
+         this.response.emit(Actions.VIDEO_NOT_FOUND);
+         return false;
+      }
+      if (this.areaEmitted) {
+         this.response.emit(Actions.AREA_SELECTED);
+         return false;
+      }
+      return $event.which === 3 || $event.button === 2 ? this.onRightMouseClick($event) : this.onLeftMouseClick($event);
+   }
 
-  private fillSelectedPolygon(): void {
-    const selectedAreaColor =
-      this.selectedAreaColor == undefined ? 'rgba(255, 0, 0, 0.5)' : this.selectedAreaColor;
-    const selectedAreaBorderColor =
-      this.selectedAreaBorderColor == undefined ? 'blue' : this.selectedAreaBorderColor;
-    this.areaSelected = true;
-    this.ctx.lineTo(this.pointsList[0]['x'], this.pointsList[0]['y']);
-    this.ctx.closePath();
-    this.ctx.fillStyle = selectedAreaColor;
-    this.ctx.fill();
-    this.ctx.strokeStyle = selectedAreaBorderColor;
-    if (!this.areaEmitted) {
-      this.response.emit(this.pointsList);
-      this.areaEmitted = true;
-    }
-  }
+   private extractScaleFromParentElement(): { scaleX: Number; scaleY: Number } {
+      const polygonContainer = this.polygonContainer.nativeElement.getBoundingClientRect();
+      return {
+         scaleX: Number((polygonContainer.width / this.canvas.width).toFixed(2)),
+         scaleY: Number((polygonContainer.height / this.canvas.height).toFixed(2)),
+      };
+   }
 
-  public selectPoint($event: any): boolean {
-    if (!this.show) {
-      this.response.emit(Actions.VIDEO_NOT_FOUND);
+   private onLeftMouseClick($event: any): boolean {
+      const videoScales = this.extractScaleFromParentElement();
+      const clientCordinates = this.calculateScaleForPoint($event, this.canvas.getBoundingClientRect(), videoScales);
+      if (this.checkIfPointIsTheSame(clientCordinates.clientX, clientCordinates.clientY)) {
+         return false;
+      }
+      this.pointsList.push({
+         x: clientCordinates.clientX,
+         y: clientCordinates.clientY,
+      });
       return false;
-    }
-    if (this.areaEmitted) {
-      this.response.emit(Actions.AREA_SELECTED);
-      return false;
-    }
-    return $event.which === 3 || $event.button === 2
-      ? this.onRightMouseClick($event)
-      : this.onLeftMouseClick($event);
-  }
+   }
 
-  private onLeftMouseClick($event: any): boolean {
-    const videoScales = this.extractScaleFromParentElement();
-    let clientX, clientY;
-    let rect = this.canvas.getBoundingClientRect();
-    clientX = ($event.clientX - rect.left) / Number(videoScales.scaleX);
-    clientY = ($event.clientY - rect.top) / Number(videoScales.scaleY);
-    if (
-      this.pointsList.length > 0 &&
-      clientX == this.pointsList[this.pointsList.length - 1]['x'] &&
-      clientY == this.pointsList[this.pointsList.length - 1]['y']
-    ) {
-      return false;
-    }
-    this.pointsList.push({
-      x: clientX,
-      y: clientY,
-    });
-    this.draw(false);
-    return false;
-  }
+   private calculateScaleForPoint(
+      $event: any,
+      rect: any,
+      videoScales: { scaleX: Number; scaleY: Number }
+   ): { clientX: Number; clientY: Number } {
+      return {
+         clientX: ($event.clientX - rect.left) / Number(videoScales.scaleX),
+         clientY: ($event.clientY - rect.top) / Number(videoScales.scaleY),
+      };
+   }
 
-  private onRightMouseClick($event: any): boolean {
-    if (this.pointsList.length <= 2) {
-      this.response.emit(Actions.NOT_ENOUGHT_POINTS);
+   private checkIfPointIsTheSame(clientX: Number, clientY: Number): boolean {
+      return (
+         this.pointsList.length > 0 &&
+         clientX == this.pointsList[this.pointsList.length - 1]['x'] &&
+         clientY == this.pointsList[this.pointsList.length - 1]['y']
+      );
+   }
+
+   private onRightMouseClick($event: any): boolean {
+      if (this.pointsList.length <= 2) {
+         this.response.emit(Actions.NOT_ENOUGHT_POINTS);
+         return false;
+      }
+      const area = { id: this.id || '', area: { areaName: 'elo222', pointsList: this.pointsList } };
+      !this.areaSelected ? this.areas.push(area) : '';
+      console.log(this.areas);
+      $event.preventDefault();
+      this.areaSelected = true;
+      this.drawingEnabled = false;
       return false;
-    }
-    this.draw(true);
-    console.log(this.pointsList);
-    $event.preventDefault();
-    return false;
-  }
+   }
 }

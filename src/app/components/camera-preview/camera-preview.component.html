@@ -1,82 +1,61 @@
 <div class="preview">
-  <div class="preview-camera">
-    <p class="preview-camera__p">Camera name</p>
-    <div class="preview-camera-container">
-      <polygon-draw
-        selectedAreaColor="rgba(0, 0, 0, 0.6)"
-        selectedAreaBorderColor="#000000"
-        lineColor="#000000"
-        lineWidth="3"
-        [id]="this.id"
-        (response)="polygonResponse($event)"
-      >
-      </polygon-draw>
-    </div>
-    <div class="preview-camera-actions">
-      <div class="preview-camera-actions-shading">
-        <button
-          pButton
-          pRipple
-          (click)="previousCamera()"
-          icon="pi pi-chevron-left"
-          type="button"
-          class="
-            preview-camera-actions-shading__button
-            p-button-rounded p-button-secondary p-button-text
-          "
-        ></button>
-        <button
-          pButton
-          pRipple
-          (click)="nextCamera()"
-          icon="pi pi-chevron-right"
-          type="button"
-          class="
-            preview-camera-actions-shading__button
-            p-button-rounded p-button-secondary p-button-text
-          "
-        ></button>
-        <div class="actions-data-picker-box">
-          <p-calendar
-            [touchUI]="true"
-            [showTime]="true"
-            [(ngModel)]="date"
-            [showIcon]="true"
-            [showButtonBar]="true"
-          ></p-calendar>
-          <p-calendar
-            [(ngModel)]="date2"
-            [showIcon]="true"
-            icon="pi pi-filter"
-            [timeOnly]="true"
-          ></p-calendar>
-
-          <div class="actions-data-picker-box-container">
-            <button
-              pButton
-              pRipple
-              (click)="showLogsDialog()"
-              type="button"
-              class="
-                actions-data-picker-box-container__button
-                p-button-rounded p-button-secondary p-button-text
-              "
-              icon="pi pi-search"
-            ></button>
-            <button
-              pButton
-              pRipple
-              (click)="showAreasDialog()"
-              type="button"
-              class="
-                actions-data-picker-box-container__button
-                p-button-rounded p-button-secondary p-button-text
-              "
-              icon="pi pi-sliders-v"
-            ></button>
-          </div>
-        </div>
+   <div class="preview-camera">
+      <p class="preview-camera__p">Camera name</p>
+      <div class="preview-camera-container">
+         <polygon-draw
+            selectedAreaColor="rgba(0, 0, 0, 0.6)"
+            selectedAreaBorderColor="#000000"
+            lineColor="#000000"
+            lineWidth="3"
+            [drawingEnabled]="true"
+            [id]="this.id"
+            [areas]="areas"
+            (response)="polygonResponse($event)"
+         >
+         </polygon-draw>
       </div>
-    </div>
-  </div>
+      <div class="preview-camera-actions">
+         <div class="preview-camera-actions-shading">
+            <button
+               pButton
+               pRipple
+               (click)="previousCamera()"
+               icon="pi pi-chevron-left"
+               type="button"
+               class="preview-camera-actions-shading__button p-button-rounded p-button-secondary p-button-text"
+            ></button>
+            <button
+               pButton
+               pRipple
+               (click)="nextCamera()"
+               icon="pi pi-chevron-right"
+               type="button"
+               class="preview-camera-actions-shading__button p-button-rounded p-button-secondary p-button-text"
+            ></button>
+            <div class="actions-data-picker-box">
+               <p-calendar [touchUI]="true" [showTime]="true" [(ngModel)]="date" [showIcon]="true" [showButtonBar]="true"></p-calendar>
+               <p-calendar [(ngModel)]="date2" [showIcon]="true" icon="pi pi-filter" [timeOnly]="true"></p-calendar>
+
+               <div class="actions-data-picker-box-container">
+                  <button
+                     pButton
+                     pRipple
+                     (click)="showLogsDialog()"
+                     type="button"
+                     class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
+                     icon="pi pi-search"
+                  ></button>
+                  <button
+                     pButton
+                     pRipple
+                     (click)="showAreasDialog()"
+                     type="button"
+                     class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
+                     icon="pi pi-sliders-v"
+                  ></button>
+               </div>
+            </div>
+         </div>
+      </div>
+   </div>
 </div>
