@@ -2,7 +2,7 @@
   <div class="view-header">
     <p class="view-header__p">View</p>
     <div class="search-box">
-      <input class="search-box__search-bar" />
+      <input #serachBox (keyup)="onKey(serachBox.value)" class="search-box__search-bar" />
       <p-button class="search-box__button" icon="pi pi-search"></p-button>
     </div>
   </div>
@@ -10,6 +10,6 @@
     <h3>No Cameras found!</h3>
   </div>
   <div *ngIf="contentLoaded" class="view-content-continer">
-    <app-camera-element *ngFor="let item of camerasWithSrc" [data]="item"></app-camera-element>
+    <app-camera-element *ngFor="let item of camerasData" [data]="item"></app-camera-element>
   </div>
 </div>
