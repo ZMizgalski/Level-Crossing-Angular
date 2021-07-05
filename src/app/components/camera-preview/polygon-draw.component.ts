@@ -5,6 +5,7 @@ import { EndpointService } from './../servieces/endpoint-service';
 import { Input, Output, Renderer2, EventEmitter, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Component, OnDestroy } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
+import { BehaviorSubject, Subject } from 'rxjs';
 
 export enum Actions {
    VIDEO_ENDED = 0,
@@ -12,6 +13,7 @@ export enum Actions {
    NOT_ENOUGHT_POINTS = 2,
    VIDEO_NOT_FOUND = 3,
    POLICY_ACCEPTED = 4,
+   AREA_CHANHED = 5,
 }
 
 @Component({
@@ -133,7 +135,6 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.ctx.fillStyle = selectedAreaColor;
       this.ctx.fill();
       this.ctx.strokeStyle = selectedAreaBorderColor;
-      this.areaSelected = true;
       this.ctx.stroke();
    }
 
@@ -205,7 +206,6 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    }
 
    private createVideoAndWaitForPolicy(): void {
-      this.drawingEnabled ? this.clearCanvas(this.intervalId) : '';
       this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
          (response: HttpResponse<Blob>) => {
             this.videoTemplate = document.createElement('video');
@@ -239,11 +239,15 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    }
 
    private setIntervalAndReturnId(): number {
+      this.areaSelected = false;
+      this.areaEmitted = false;
+      this.pointsList = [];
       const id = window.setInterval(() => {
          this.ctx = this.canvas.getContext('2d');
          this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
          this.drawingEnabled ? this.drawOneAreaOnSelect(this.pointsList) : this.drawEachArea(this.areas);
          this.checkIfCanvasIsBlank(this.canvas) ? (this.videoLoaded = false) : (this.videoLoaded = true);
+         console.log('1');
       }, 200);
       return id;
    }
@@ -324,6 +328,12 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       $event.preventDefault();
       this.areaSelected = true;
       this.drawingEnabled = false;
+      this.areaEmitted = true;
+      this.pointsList = [];
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
+      this.intervalId.push(this.setIntervalAndReturnId());
+      this.response.emit(Actions.AREA_CHANHED);
       return false;
    }
 }

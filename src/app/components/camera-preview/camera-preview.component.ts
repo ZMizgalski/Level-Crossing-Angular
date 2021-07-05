@@ -3,7 +3,7 @@ import { EndpointService } from './../servieces/endpoint-service';
 import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LogsModel } from '../interfaces/logsModel';
@@ -135,11 +135,12 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       });
 
       this.areasDialog.onClose.subscribe((value: AreasDialogResponseModel) => {
+         if (value.addNew === true) {
+            console.log('elo');
+            this.enableDrawing = true;
+            return;
+         }
          this.areas.forEach((area: AreaModel, index: number) => {
-            if (value.addNew === true) {
-               console.log('elo');
-               this.enableDrawing = true;
-            }
             if (area.id === value.result && area.area?.areaName === value.areaName) {
                value.delete ? this.deleteArea(index, area) : this.updateArea(index, area);
             }
@@ -178,5 +179,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    public polygonResponse($event: any): void {
       $event == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
+      $event == Actions.AREA_CHANHED ? (this.enableDrawing = false) : '';
    }
 }
