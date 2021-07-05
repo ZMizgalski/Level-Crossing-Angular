@@ -18,7 +18,7 @@ export enum Actions {
 @Component({
    selector: 'polygon-draw',
    template: `
-      <p-confirmDialog header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
+      <p-confirmDialog key="acceptPolicy" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
       <div #polygonContainer class="polygon-container" (mousedown)="selectPoint($event)">
          <div class="polygon-container-spinner">
             <i *ngIf="!videoLoaded && policyAccepted" class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
@@ -104,6 +104,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    @Input() public id?: string;
    @Input() public height?: string;
    @Input() public width?: string;
+   @Input() public areaName?: string;
    @Input() public drawingEnabled: boolean = false;
    @Output() public response = new EventEmitter();
    @ViewChild('polygon') private polygon!: ElementRef;
@@ -201,6 +202,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
             this.policyAccepted = false;
             return;
          },
+         key: 'acceptPolicy',
       });
    }
 
@@ -322,7 +324,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          this.response.emit(Actions.NOT_ENOUGHT_POINTS);
          return false;
       }
-      const area = { id: this.id || '', area: { areaName: 'elo222', pointsList: this.pointsList } };
+      const area = { id: this.id || '', area: { areaName: this.areaName || 'Default Name', pointsList: this.pointsList } };
       !this.areaSelected ? this.areas.push(area) : '';
       $event.preventDefault();
       this.prepareCanvasForNewSelection();

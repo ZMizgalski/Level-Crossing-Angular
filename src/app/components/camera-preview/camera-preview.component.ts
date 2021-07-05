@@ -1,9 +1,10 @@
+import { ConfirmationService } from 'primeng/api';
 import { Actions } from './polygon-draw.component';
 import { EndpointService } from './../servieces/endpoint-service';
 import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
-import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LogsModel } from '../interfaces/logsModel';
@@ -18,13 +19,20 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    @ViewChild('video') public video!: ElementRef;
    public date!: Date;
    public date2!: Date;
+   public areaName?: string;
    public areasDialog!: DynamicDialogRef;
    public logsDialog!: DynamicDialogRef;
    public id?: string;
    public policyAccteped: boolean = false;
    public enableDrawing: boolean = false;
+   public showAreaNameDialog: boolean = false;
 
-   constructor(private route: ActivatedRoute, public dialogService: DialogService, private endpointService: EndpointService) {}
+   constructor(
+      private route: ActivatedRoute,
+      public dialogService: DialogService,
+      private endpointService: EndpointService,
+      private confirmationService: ConfirmationService
+   ) {}
 
    areas: AreaModel[] = [
       {
@@ -121,7 +129,9 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       });
 
       this.logsDialog.onClose.subscribe(value => {
-         console.log(value);
+         if (value != undefined) {
+            console.log(value);
+         }
       });
    }
 
@@ -135,17 +145,29 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       });
 
       this.areasDialog.onClose.subscribe((value: AreasDialogResponseModel) => {
-         if (value.addNew === true) {
-            console.log('elo');
-            this.enableDrawing = true;
-            return;
-         }
-         this.areas.forEach((area: AreaModel, index: number) => {
-            if (area.id === value.result && area.area?.areaName === value.areaName) {
-               value.delete ? this.deleteArea(index, area) : this.updateArea(index, area);
+         if (value != undefined) {
+            if (value.addNew === true) {
+               this.showAreaNameDialog = true;
+               return;
             }
-         });
+            this.areas.forEach((area: AreaModel, index: number) => {
+               if (area.id === value.result && area.area?.areaName === value.areaName) {
+                  value.delete ? this.deleteArea(index, area) : this.updateArea(index, area);
+               }
+            });
+         }
       });
+   }
+
+   public newAreaNameAccept(input: HTMLInputElement): void {
+      this.areaName = input.value;
+      this.showAreaNameDialog = false;
+      this.enableDrawing = true;
+   }
+
+   public newAreaNameReject(): void {
+      this.enableDrawing = false;
+      this.showAreaNameDialog = false;
    }
 
    private updateArea(index: number, area: AreaModel): void {

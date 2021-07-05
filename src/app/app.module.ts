@@ -21,36 +21,35 @@ import { ConfirmDialogModule } from 'primeng/confirmdialog';
 import { ConfirmationService } from 'primeng/api';
 import { HttpInterceptor } from './components/servieces/loader/http-interceptor';
 import { LoaderComponent } from './components/servieces/loader/loader-component';
+import { DialogModule } from 'primeng/dialog';
+import { InputTextModule } from 'primeng/inputtext';
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    MainNavComponent,
-    ViewComponent,
-    CameraPreviewComponent,
-    LoaderComponent,
-    CameraElementComponent,
-    LogsDynamicDialogComponent,
-    AreasDynamicDialogComponent,
-    PolygonDraw,
-  ],
-  imports: [
-    ConfirmDialogModule,
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    CalendarModule,
-    TableModule,
-  ],
-  providers: [
-    DialogService,
-    ConfirmationService,
-    LoaderService,
-    { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
-  ],
-  bootstrap: [AppComponent],
-  exports: [],
+   declarations: [
+      AppComponent,
+      MainNavComponent,
+      ViewComponent,
+      CameraPreviewComponent,
+      LoaderComponent,
+      CameraElementComponent,
+      LogsDynamicDialogComponent,
+      AreasDynamicDialogComponent,
+      PolygonDraw,
+   ],
+   imports: [
+      ConfirmDialogModule,
+      InputTextModule,
+      BrowserModule,
+      HttpClientModule,
+      AppRoutingModule,
+      DialogModule,
+      BrowserAnimationsModule,
+      FormsModule,
+      CalendarModule,
+      TableModule,
+   ],
+   providers: [DialogService, ConfirmationService, LoaderService, { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true }],
+   bootstrap: [AppComponent],
+   exports: [],
 })
 export class AppModule {}

@@ -9,6 +9,7 @@
             lineWidth="3"
             [drawingEnabled]="enableDrawing"
             [id]="this.id"
+            [areaName]="areaName"
             [areas]="areas"
             (response)="polygonResponse($event)"
          >
@@ -74,3 +75,21 @@
       </div>
    </div>
 </div>
+
+<p-dialog
+   header="Set new area name"
+   [(visible)]="showAreaNameDialog"
+   [modal]="true"
+   [style]="{width: '50vw'}"
+   [baseZIndex]="10001"
+   [draggable]="false"
+   [resizable]="false"
+>
+   <div class="p-input-filled input-container">
+      <input type="text" pInputText #input placeholder="Area Name" />
+   </div>
+   <ng-template pTemplate="footer">
+      <p-button icon="pi pi-check" (click)="newAreaNameAccept(input)" label="Yes" class="p-button-text"></p-button>
+      <p-button icon="pi pi-times" (click)="newAreaNameReject()" label="No"></p-button>
+   </ng-template>
+</p-dialog>

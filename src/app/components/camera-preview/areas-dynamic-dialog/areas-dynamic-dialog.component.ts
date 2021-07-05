@@ -10,7 +10,6 @@ import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 export class AreasDynamicDialogComponent {
    areas!: AreaModel[];
    loading: boolean = true;
-   htmlRef?: DynamicDialogRef;
 
    constructor(private config: DynamicDialogConfig, public ref: DynamicDialogRef) {
       this.areas = config.data;
