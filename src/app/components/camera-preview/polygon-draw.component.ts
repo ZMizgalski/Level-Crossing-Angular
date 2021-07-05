@@ -326,13 +326,12 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       const area = { id: this.id || '', area: { areaName: 'elo222', pointsList: this.pointsList } };
       !this.areaSelected ? this.areas.push(area) : '';
       $event.preventDefault();
-      this.areaSelected = true;
       this.drawingEnabled = false;
-      this.areaEmitted = true;
-      this.pointsList = [];
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
-      this.intervalId.push(this.setIntervalAndReturnId());
+      this.areaSelected = false;
+      this.areaEmitted = false;
+      this.pointsList = [];
       this.response.emit(Actions.AREA_CHANHED);
       return false;
    }
