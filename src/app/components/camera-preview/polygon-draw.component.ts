@@ -5,7 +5,6 @@ import { EndpointService } from './../servieces/endpoint-service';
 import { Input, Output, Renderer2, EventEmitter, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Component, OnDestroy } from '@angular/core';
 import { HttpResponse } from '@angular/common/http';
-import { BehaviorSubject, Subject } from 'rxjs';
 
 export enum Actions {
    VIDEO_ENDED = 0,
@@ -326,6 +325,11 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       const area = { id: this.id || '', area: { areaName: 'elo222', pointsList: this.pointsList } };
       !this.areaSelected ? this.areas.push(area) : '';
       $event.preventDefault();
+      this.prepareCanvasForNewSelection();
+      return false;
+   }
+
+   private prepareCanvasForNewSelection(): void {
       this.drawingEnabled = false;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
@@ -333,6 +337,5 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.areaEmitted = false;
       this.pointsList = [];
       this.response.emit(Actions.AREA_CHANHED);
-      return false;
    }
 }

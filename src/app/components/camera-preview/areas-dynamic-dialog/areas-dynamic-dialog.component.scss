@@ -1,114 +1,122 @@
 @media screen and (max-width: 450px) {
-  .header-tr {
-    flex-wrap: wrap !important;
-  }
+   .header-tr {
+      flex-wrap: wrap !important;
+   }
 }
 
 .header-tr {
-  &-th {
-    text-align: center;
-    width: 100%;
-    &__text {
+   &-th {
       text-align: center;
-    }
-  }
-
-  th {
-    width: inherit;
-    height: 100%;
-    flex: 100;
-    .header-search-box {
-      display: flex;
-      outline: none;
-      justify-content: center;
-      align-items: center;
-      border-radius: 5px;
-      height: inherit;
-      width: inherit;
-      max-width: 100%;
-
-      &-span {
-        background: transparent;
-        border: 1px solid #c2c2c2;
-        display: flex;
-        align-items: center;
-
-        border-radius: 5px;
-
-        padding: 5px;
-        max-width: 62%;
-
-        .pi {
-          background: transparent;
-          max-width: inherit;
-        }
-
-        input {
-          background: transparent;
-          border: none;
-          outline: none;
-          max-width: inherit;
-        }
+      width: 100%;
+      &-button-container {
+         display: flex;
+         justify-content: center;
       }
-    }
-  }
+      &__text {
+         text-align: center;
+      }
+   }
+
+   th {
+      width: inherit;
+      height: 100%;
+      flex: 100;
+      .header-search-box {
+         display: flex;
+         outline: none;
+         justify-content: center;
+         align-items: center;
+         border-radius: 5px;
+         height: inherit;
+         width: inherit;
+         max-width: 100%;
+
+         &-span {
+            background: transparent;
+            border: 1px solid #c2c2c2;
+            display: flex;
+            align-items: center;
+
+            border-radius: 5px;
+
+            padding: 5px;
+            max-width: 62%;
+
+            .pi {
+               background: transparent;
+               max-width: inherit;
+            }
+
+            input {
+               background: transparent;
+               border: none;
+               outline: none;
+               max-width: inherit;
+            }
+         }
+      }
+   }
 }
 
 .body-tr {
-  &-td {
-    text-align: center !important;
-    p {
-      display: none;
-      font-weight: bold;
-    }
-    &-button-container {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-
-      &__button {
-        margin: 10px;
+   &-td {
+      text-align: center !important;
+      p {
+         display: none;
+         font-weight: bold;
       }
-    }
-  }
+      &-button-container {
+         display: flex;
+         align-items: center;
+         justify-content: center;
+
+         &__button {
+            margin: 10px;
+         }
+      }
+   }
 }
 
 @media screen and (max-width: 40rem) {
-  :host ::ng-deep {
-    .p-datatable {
-      &.p-datatable-responsive-demo {
-        .p-datatable-thead > tr > th,
-        .p-datatable-tfoot > tr > td {
-          display: none;
-        }
+   :host ::ng-deep {
+      .p-datatable {
+         &.p-datatable-responsive-demo {
+            .p-datatable-thead > tr > th,
+            .p-datatable-tfoot > tr > td {
+               display: none;
+            }
 
-        .body-tr-td {
-          p {
-            display: unset !important;
-          }
-        }
+            .header-tr-th-button-container {
+               display: flex !important;
+            }
 
-        .p-datatable-tbody > tr > td {
-          text-align: left;
-          display: block;
-          width: 100%;
-          float: left;
-          clear: left;
-          border: 0 none;
+            .body-tr-td {
+               p {
+                  display: unset !important;
+               }
+            }
 
-          .p-column-title {
-            padding: 0.4rem;
-            min-width: 30%;
-            display: inline-block;
-            margin: -0.4em 1em -0.4em -0.4rem;
-            font-weight: bold;
-          }
+            .p-datatable-tbody > tr > td {
+               text-align: left;
+               display: block;
+               width: 100%;
+               float: left;
+               clear: left;
+               border: 0 none;
 
-          &:last-child {
-            border-bottom: 1px solid var(--surface-d);
-          }
-        }
+               .p-column-title {
+                  padding: 0.4rem;
+                  min-width: 30%;
+                  display: inline-block;
+                  margin: -0.4em 1em -0.4em -0.4rem;
+                  font-weight: bold;
+               }
+
+               &:last-child {
+                  border-bottom: 1px solid var(--surface-d);
+               }
+            }
+         }
       }
-    }
-  }
+   }
 }
