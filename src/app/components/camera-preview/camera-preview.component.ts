@@ -1,4 +1,3 @@
-import { ConfirmationService } from 'primeng/api';
 import { Actions } from './polygon-draw.component';
 import { EndpointService } from './../servieces/endpoint-service';
 import { AreaModel } from './../interfaces/areaModel';
@@ -27,12 +26,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    public enableDrawing: boolean = false;
    public showAreaNameDialog: boolean = false;
 
-   constructor(
-      private route: ActivatedRoute,
-      public dialogService: DialogService,
-      private endpointService: EndpointService,
-      private confirmationService: ConfirmationService
-   ) {}
+   constructor(private route: ActivatedRoute, public dialogService: DialogService, private endpointService: EndpointService) {}
 
    areas: AreaModel[] = [
       {
@@ -171,23 +165,25 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    }
 
    private updateArea(index: number, area: AreaModel): void {
-      this.areas.splice(index, 1);
+      this.enableDrawing = true;
       this.endpointService.updateArea(area).subscribe(
          response => {
             console.log(response);
+            this.areas.splice(index, 1);
          },
          error => {
             console.log(error);
+            this.enableDrawing = false;
          }
       );
    }
 
    private deleteArea(index: number, area: AreaModel): void {
-      this.areas.splice(index, 1);
       const deleteArea = { id: area.id, areaName: area.area?.areaName };
       this.endpointService.deleteArea(deleteArea).subscribe(
          response => {
             console.log(response);
+            this.areas.splice(index, 1);
          },
          error => {
             console.log(error);
@@ -201,6 +197,10 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    public polygonResponse($event: any): void {
       $event == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
-      $event == Actions.AREA_CHANHED ? (this.enableDrawing = false) : '';
+      $event == Actions.AREA_CHANHED ? this.changeValuesOnAreaChange() : '';
+   }
+
+   private changeValuesOnAreaChange(): void {
+      this.enableDrawing = false;
    }
 }

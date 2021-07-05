@@ -248,8 +248,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
          this.drawingEnabled ? this.drawOneAreaOnSelect(this.pointsList) : this.drawEachArea(this.areas);
          this.checkIfCanvasIsBlank(this.canvas) ? (this.videoLoaded = false) : (this.videoLoaded = true);
-         console.log('1');
-      }, 200);
+      }, 20);
       return id;
    }
 
