@@ -112,12 +112,8 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    }
 
    ngOnDestroy() {
-      if (this.areasDialog) {
-         this.areasDialog.close();
-      }
-      if (this.logsDialog) {
-         this.logsDialog.close();
-      }
+      this.areasDialog ? this.areasDialog.close() : '';
+      this.logsDialog ? this.logsDialog.close() : '';
    }
 
    public showLogsDialog(): void {
@@ -146,16 +142,18 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       });
 
       this.areasDialog.onClose.subscribe((value: AreasDialogResponseModel) => {
-         if (value != undefined) {
-            if (value.addNew === true) {
-               this.showAreaNameDialog = true;
-               return;
-            }
-            this.areas.forEach((area: AreaModel, index: number) => {
-               if (area.id === value.result && area.area?.areaName === value.areaName) {
-                  value.delete ? this.deleteArea(index, area) : this.updateArea(index);
-               }
-            });
+         value != undefined ? this.chooseActionAfterDialogClose(value) : '';
+      });
+   }
+
+   private chooseActionAfterDialogClose(areasDialogResponseData: AreasDialogResponseModel): void {
+      if (areasDialogResponseData.addNew === true) {
+         this.showAreaNameDialog = true;
+         return;
+      }
+      this.areas.forEach((area: AreaModel, index: number) => {
+         if (area.id === areasDialogResponseData.result && area.area?.areaName === areasDialogResponseData.areaName) {
+            areasDialogResponseData.delete ? this.deleteArea(index, area) : this.prepareDataForUpdate(index);
          }
       });
    }
@@ -171,16 +169,22 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       this.showAreaNameDialog = false;
    }
 
-   private updateArea(index: number): void {
+   private prepareDataForUpdate(index: number): void {
       this.showAreaNameDialog = true;
       this.oldAreaToUpdate = { index: index };
+   }
+
+   public polygonResponse($event: PolygonResponse): void {
+      $event.action == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
+      $event.action == Actions.AREA_CHANHED ? this.updateOrAddNewArea($event.body) : '';
    }
 
    private deleteArea(index: number, area: AreaModel): void {
       const deleteArea = { id: area.id, areaName: area.area?.areaName };
       this.endpointService.deleteArea(deleteArea).subscribe(
-         () => {
+         response => {
             this.areas.splice(index, 1);
+            this.messageService.add({ severity: 'success', summary: 'Server Response', detail: response });
          },
          error => {
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
@@ -188,32 +192,49 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       );
    }
 
-   public polygonResponse($event: PolygonResponse): void {
-      $event.action == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
-      $event.action == Actions.AREA_CHANHED ? this.changeValuesOnAreaChange($event.body) : '';
-   }
-
-   private changeValuesOnAreaChange(body: NewAreaData | undefined): void {
+   private updateOrAddNewArea(body: NewAreaData | undefined): void {
       if (body != undefined) {
-         if (this.oldAreaToUpdate != undefined) {
-            const index = this.oldAreaToUpdate.index;
-            const area = { id: this.id, area: { areaName: body.areaName, pointsList: body.pointsList } };
-            this.endpointService.updateArea(area).subscribe(
-               () => {
-                  this.areas.splice(index, 1);
-               },
-               error => {
-                  this.areas.forEach((area: AreaModel, index: number) => {
-                     if (area.id === this.id && area.area?.areaName === body.areaName) {
-                        this.areas.splice(index, 1);
-                     }
-                  });
-                  this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
-               }
-            );
-         }
+         const area = { id: this.id, area: { areaName: body.areaName, pointsList: body.pointsList } };
+         this.oldAreaToUpdate != undefined
+            ? this.updateAreaAfterResponse(this.oldAreaToUpdate.index, area, body)
+            : this.addNewAreaAfterResponse(area, body);
       }
       this.enableDrawing = false;
+   }
+
+   private addNewAreaAfterResponse(area: AreaModel, responseBody: NewAreaData) {
+      this.endpointService.setNewArea(area).subscribe(
+         response => {
+            this.messageService.add({ severity: 'success', summary: 'Server Response', detail: response });
+         },
+         error => {
+            this.deleteAreaAfterErrorResponse(responseBody);
+            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
+         }
+      );
+   }
+
+   private updateAreaAfterResponse(index: number, area: AreaModel, responseBody: NewAreaData) {
+      this.endpointService.updateArea(area).subscribe(
+         response => {
+            this.areas.splice(index, 1);
+            this.oldAreaToUpdate = undefined;
+            this.messageService.add({ severity: 'success', summary: 'Server Response', detail: response });
+         },
+         error => {
+            this.deleteAreaAfterErrorResponse(responseBody);
+            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
+            this.oldAreaToUpdate = undefined;
+         }
+      );
+   }
+
+   private deleteAreaAfterErrorResponse(responseBody: NewAreaData): void {
+      this.areas.forEach((area: AreaModel, index: number) => {
+         if (area.id === this.id && area.area?.areaName === responseBody.areaName) {
+            this.areas.splice(index, 1);
+         }
+      });
    }
 
    public previousCamera(): void {}
