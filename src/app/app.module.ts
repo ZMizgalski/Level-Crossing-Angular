@@ -23,6 +23,8 @@ import { HttpInterceptor } from './components/servieces/loader/http-interceptor'
 import { LoaderComponent } from './components/servieces/loader/loader-component';
 import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
+import { ToastModule } from 'primeng/toast';
+import { MessageService } from 'primeng/api';
 
 @NgModule({
    declarations: [
@@ -41,6 +43,7 @@ import { InputTextModule } from 'primeng/inputtext';
       InputTextModule,
       BrowserModule,
       HttpClientModule,
+      ToastModule,
       AppRoutingModule,
       DialogModule,
       BrowserAnimationsModule,
@@ -48,7 +51,13 @@ import { InputTextModule } from 'primeng/inputtext';
       CalendarModule,
       TableModule,
    ],
-   providers: [DialogService, ConfirmationService, LoaderService, { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true }],
+   providers: [
+      MessageService,
+      DialogService,
+      ConfirmationService,
+      LoaderService,
+      { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
+   ],
    bootstrap: [AppComponent],
    exports: [],
 })

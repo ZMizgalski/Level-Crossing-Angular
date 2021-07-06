@@ -15,6 +15,16 @@ export enum Actions {
    AREA_CHANHED = 5,
 }
 
+export interface PolygonResponse {
+   action: Actions;
+   body?: NewAreaData;
+}
+
+export interface NewAreaData {
+   areaName: string;
+   pointsList: Point[];
+}
+
 @Component({
    selector: 'polygon-draw',
    template: `
@@ -110,7 +120,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    @ViewChild('polygon') private polygon!: ElementRef;
    @ViewChild('polygonContainer') private polygonContainer!: ElementRef;
    public videoLoaded: boolean = false;
-   private pointsList: any[] = [];
+   private pointsList: Point[] = [];
    private canvas: any;
    private ctx: any;
    private intervalId: number[] = [];
@@ -196,7 +206,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          accept: () => {
             this.policyAccepted = true;
             this.createVideoAndWaitForPolicy();
-            this.response.emit(Actions.POLICY_ACCEPTED);
+            this.response.emit({ action: Actions.POLICY_ACCEPTED });
          },
          reject: () => {
             this.policyAccepted = false;
@@ -235,7 +245,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
          this.videoLoaded = false;
          !this.windowClosed ? this.createVideoAndWaitForPolicy() : '';
-         this.response.emit(Actions.VIDEO_ENDED);
+         this.response.emit({ action: Actions.VIDEO_ENDED });
       });
    }
 
@@ -268,11 +278,11 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          return false;
       }
       if (!this.videoLoaded) {
-         this.response.emit(Actions.VIDEO_NOT_FOUND);
+         this.response.emit({ action: Actions.VIDEO_NOT_FOUND });
          return false;
       }
       if (this.areaEmitted) {
-         this.response.emit(Actions.AREA_SELECTED);
+         this.response.emit({ action: Actions.AREA_SELECTED });
          return false;
       }
       return $event.which === 3 || $event.button === 2 ? this.onRightMouseClick($event) : this.onLeftMouseClick($event);
@@ -320,7 +330,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
 
    private onRightMouseClick($event: any): boolean {
       if (this.pointsList.length <= 2) {
-         this.response.emit(Actions.NOT_ENOUGHT_POINTS);
+         this.response.emit({ action: Actions.NOT_ENOUGHT_POINTS });
          return false;
       }
       const area = { id: this.id || '', area: { areaName: this.areaName || 'Default Name', pointsList: this.pointsList } };
@@ -334,9 +344,9 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.drawingEnabled = false;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
+      this.response.emit({ action: Actions.AREA_CHANHED, body: { areaName: this.areaName, pointsList: this.pointsList } });
       this.areaSelected = false;
       this.areaEmitted = false;
       this.pointsList = [];
-      this.response.emit(Actions.AREA_CHANHED);
    }
 }

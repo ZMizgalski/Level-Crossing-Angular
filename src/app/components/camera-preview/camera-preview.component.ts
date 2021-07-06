@@ -1,6 +1,6 @@
-import { Actions } from './polygon-draw.component';
+import { Actions, NewAreaData, PolygonResponse } from './polygon-draw.component';
 import { EndpointService } from './../servieces/endpoint-service';
-import { AreaModel } from './../interfaces/areaModel';
+import { AreaModel, Point } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -8,6 +8,7 @@ import { ActivatedRoute } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LogsModel } from '../interfaces/logsModel';
 import { AreasDialogResponseModel } from '../interfaces/areasDialogResponseModel';
+import { MessageService } from 'primeng/api';
 
 @Component({
    selector: 'app-camera-preview',
@@ -25,8 +26,14 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    public policyAccteped: boolean = false;
    public enableDrawing: boolean = false;
    public showAreaNameDialog: boolean = false;
+   private oldAreaToUpdate?: { index: number };
 
-   constructor(private route: ActivatedRoute, public dialogService: DialogService, private endpointService: EndpointService) {}
+   constructor(
+      private route: ActivatedRoute,
+      public dialogService: DialogService,
+      private endpointService: EndpointService,
+      private messageService: MessageService
+   ) {}
 
    areas: AreaModel[] = [
       {
@@ -99,7 +106,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
             console.log(value);
          },
          error => {
-            console.log(error);
+            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
          }
       );
    }
@@ -146,7 +153,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
             }
             this.areas.forEach((area: AreaModel, index: number) => {
                if (area.id === value.result && area.area?.areaName === value.areaName) {
-                  value.delete ? this.deleteArea(index, area) : this.updateArea(index, area);
+                  value.delete ? this.deleteArea(index, area) : this.updateArea(index);
                }
             });
          }
@@ -164,43 +171,52 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       this.showAreaNameDialog = false;
    }
 
-   private updateArea(index: number, area: AreaModel): void {
-      this.enableDrawing = true;
-      this.endpointService.updateArea(area).subscribe(
-         response => {
-            console.log(response);
-            this.areas.splice(index, 1);
-         },
-         error => {
-            console.log(error);
-            this.enableDrawing = false;
-         }
-      );
+   private updateArea(index: number): void {
+      this.showAreaNameDialog = true;
+      this.oldAreaToUpdate = { index: index };
    }
 
    private deleteArea(index: number, area: AreaModel): void {
       const deleteArea = { id: area.id, areaName: area.area?.areaName };
       this.endpointService.deleteArea(deleteArea).subscribe(
-         response => {
-            console.log(response);
+         () => {
             this.areas.splice(index, 1);
          },
          error => {
-            console.log(error);
+            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
          }
       );
+   }
+
+   public polygonResponse($event: PolygonResponse): void {
+      $event.action == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
+      $event.action == Actions.AREA_CHANHED ? this.changeValuesOnAreaChange($event.body) : '';
+   }
+
+   private changeValuesOnAreaChange(body: NewAreaData | undefined): void {
+      if (body != undefined) {
+         if (this.oldAreaToUpdate != undefined) {
+            const index = this.oldAreaToUpdate.index;
+            const area = { id: this.id, area: { areaName: body.areaName, pointsList: body.pointsList } };
+            this.endpointService.updateArea(area).subscribe(
+               () => {
+                  this.areas.splice(index, 1);
+               },
+               error => {
+                  this.areas.forEach((area: AreaModel, index: number) => {
+                     if (area.id === this.id && area.area?.areaName === body.areaName) {
+                        this.areas.splice(index, 1);
+                     }
+                  });
+                  this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
+               }
+            );
+         }
+      }
+      this.enableDrawing = false;
    }
 
    public previousCamera(): void {}
 
    public nextCamera(): void {}
-
-   public polygonResponse($event: any): void {
-      $event == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
-      $event == Actions.AREA_CHANHED ? this.changeValuesOnAreaChange() : '';
-   }
-
-   private changeValuesOnAreaChange(): void {
-      this.enableDrawing = false;
-   }
 }
