@@ -11,6 +11,7 @@
             [id]="this.id"
             [areaName]="areaName"
             [areas]="areas"
+            [src]="src"
             (response)="polygonResponse($event)"
          >
          </polygon-draw>
@@ -68,6 +69,15 @@
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
                      icon="pi pi-sliders-v"
+                  ></button>
+                  <button
+                     pButton
+                     pRipple
+                     [disabled]="!policyAccteped || src?.data == undefined"
+                     (click)="playLiveVideo()"
+                     type="button"
+                     class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
+                     icon="pi pi-video"
                   ></button>
                </div>
             </div>

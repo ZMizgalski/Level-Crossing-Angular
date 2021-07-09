@@ -115,6 +115,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    @Input() public height?: string;
    @Input() public width?: string;
    @Input() public areaName?: string;
+   @Input() public src?: { data: any; srcChange: boolean } = { data: undefined, srcChange: false };
    @Input() public drawingEnabled: boolean = false;
    @Output() public response = new EventEmitter();
    @ViewChild('polygon') private polygon!: ElementRef;
@@ -216,7 +217,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       });
    }
 
-   private createVideoAndWaitForPolicy(): void {
+   private playLiveVideo(): void {
       this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
          (response: HttpResponse<Blob>) => {
             this.videoTemplate = document.createElement('video');
@@ -233,6 +234,25 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       );
    }
 
+   private playRecordedVideo(): void {
+      if (this.src?.data != undefined) {
+         if (this.src.data.size != 0) {
+            this.videoTemplate = document.createElement('video');
+            this.videoTemplate.src = URL.createObjectURL(this.src.data);
+            this.videoTemplate.autoplay = true;
+            this.prepareCanvas();
+         } else {
+            this.playLiveVideo();
+         }
+      } else {
+         this.playLiveVideo();
+      }
+   }
+
+   private createVideoAndWaitForPolicy(): void {
+      this.src?.data != undefined ? this.playRecordedVideo() : this.playLiveVideo();
+   }
+
    private prepareCanvas(): void {
       this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
       this.intervalId.push(this.setIntervalAndReturnId());
@@ -241,11 +261,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
 
    private onVideoEnd(): void {
       this.videoTemplate?.addEventListener('ended', () => {
-         this.clearAllIntervals(this.intervalId);
-         this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-         this.videoLoaded = false;
-         !this.windowClosed ? this.createVideoAndWaitForPolicy() : '';
-         this.response.emit({ action: Actions.VIDEO_ENDED });
+         this.srcChange();
       });
    }
 
@@ -253,13 +269,23 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.areaSelected = false;
       this.areaEmitted = false;
       this.pointsList = [];
+      this.src = { data: undefined, srcChange: false };
       const id = window.setInterval(() => {
+         this.src?.srcChange == true ? this.srcChange() : '';
          this.ctx = this.canvas.getContext('2d');
          this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
          this.drawingEnabled ? this.drawOneAreaOnSelect(this.pointsList) : this.drawEachArea(this.areas);
          this.checkIfCanvasIsBlank(this.canvas) ? (this.videoLoaded = false) : (this.videoLoaded = true);
       }, 20);
       return id;
+   }
+
+   private srcChange(): void {
+      this.clearAllIntervals(this.intervalId);
+      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
+      this.videoLoaded = false;
+      !this.windowClosed ? this.createVideoAndWaitForPolicy() : '';
+      this.response.emit({ action: Actions.VIDEO_ENDED });
    }
 
    private drawOneAreaOnSelect(area: Point[]): void {

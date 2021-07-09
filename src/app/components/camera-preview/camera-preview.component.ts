@@ -23,6 +23,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    public areasDialog!: DynamicDialogRef;
    public logsDialog!: DynamicDialogRef;
    public id?: string;
+   public src?: { data: any; srcChange: boolean };
    public policyAccteped: boolean = false;
    public enableDrawing: boolean = false;
    public showAreaNameDialog: boolean = false;
@@ -80,11 +81,11 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    ];
 
    logs: LogsModel[] = [
-      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_18-54-12' },
-      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_18-57-12' },
-      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_19-01-20' },
-      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_19-04-20' },
-      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_19-06-59' },
+      { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_18-54-12' },
+      { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_18-57-12' },
+      { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_19-01-20' },
+      { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_19-04-20' },
+      { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_19-06-59' },
    ];
 
    private gedIdFromRoute(): string | null {
@@ -146,10 +147,17 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       );
    }
 
+   public playLiveVideo(): void {
+      this.src = { data: undefined, srcChange: true };
+   }
+
    private playOldRecord(id: string, date: string): void {
       this.endpointService.getFileByDate(id, date).subscribe(
-         () => {},
+         response => {
+            this.src = { data: new Blob([response.body as BlobPart], { type: 'video/mp4' }), srcChange: false };
+         },
          error => {
+            this.src = { data: undefined, srcChange: true };
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
          }
       );
