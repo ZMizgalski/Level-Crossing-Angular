@@ -1,4 +1,4 @@
 export interface LogsModel {
-  filename?: string;
-  time?: string;
+   id?: string;
+   time?: string;
 }

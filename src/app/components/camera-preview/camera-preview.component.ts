@@ -2,9 +2,9 @@ import { Actions, NewAreaData, PolygonResponse } from './polygon-draw.component'
 import { EndpointService } from './../servieces/endpoint-service';
 import { AreaModel, Point } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
-import { LogsDynamicDialogComponent } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
+import { LogsDynamicDialogComponent, ResponseLogsModel } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { LogsModel } from '../interfaces/logsModel';
 import { AreasDialogResponseModel } from '../interfaces/areasDialogResponseModel';
@@ -29,6 +29,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    private oldAreaToUpdate?: { index: number };
 
    constructor(
+      private router: Router,
       private route: ActivatedRoute,
       public dialogService: DialogService,
       private endpointService: EndpointService,
@@ -79,20 +80,11 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    ];
 
    logs: LogsModel[] = [
-      { filename: 'elo.mp4', time: '12_12_12' },
-      { filename: 'elo.mp4', time: '12_12_12' },
-      { filename: 'elo.mp4', time: '12_12_12' },
-      { filename: 'elo.mp4', time: '12_12_12' },
-      { filename: 'elo.mp4', time: '12_12_12' },
-      { filename: 'elo.mp4', time: '12_12_12' },
-      { filename: 'elo.mp4', time: '11_13_14' },
-      { filename: 'elo.mp4', time: '11_13_14' },
-      { filename: 'elo.mp4', time: '11_13_14' },
-      { filename: 'elo.mp4', time: '11_13_14' },
-      { filename: 'elo.mp4', time: '11_13_14' },
-      { filename: 'elo.mp4', time: '11_13_14' },
-      { filename: 'elo.mp4', time: '11_13_14' },
-      { filename: 'elo.mp4', time: '11_13_14' },
+      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_18-54-12' },
+      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_18-57-12' },
+      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_19-01-20' },
+      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_19-04-20' },
+      { id: '6049e36a-6801-403b-9e80-26091016ab7e', time: '2021-07-06_19-06-59' },
    ];
 
    private gedIdFromRoute(): string | null {
@@ -106,6 +98,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
             console.log(value);
          },
          error => {
+            this.router.navigate(['/view']);
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
          }
       );
@@ -125,11 +118,41 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
          baseZIndex: 10000,
       });
 
-      this.logsDialog.onClose.subscribe(value => {
+      this.logsDialog.onClose.subscribe((value: ResponseLogsModel) => {
          if (value != undefined) {
-            console.log(value);
+            value.download ? this.downloadFile(value.id, value.date) : this.playOldRecord(value.id, value.date);
          }
       });
+   }
+
+   private downloadFile(id: string, date: string): void {
+      this.endpointService.downloadFileByDate(id, date).subscribe(
+         response => {
+            console.log(response);
+            const blob = new Blob([response.body as BlobPart], { type: 'video/mp4' });
+            const url = window.URL.createObjectURL(blob);
+            var link = document.createElement('a');
+            link.href = url;
+            link.download = date;
+            link.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true, view: window }));
+            setTimeout(function () {
+               window.URL.revokeObjectURL(url);
+               link.remove();
+            }, 100);
+         },
+         error => {
+            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
+         }
+      );
+   }
+
+   private playOldRecord(id: string, date: string): void {
+      this.endpointService.getFileByDate(id, date).subscribe(
+         () => {},
+         error => {
+            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
+         }
+      );
    }
 
    public showAreasDialog(): void {
