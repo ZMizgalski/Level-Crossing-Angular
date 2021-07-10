@@ -228,6 +228,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
             this.prepareCanvas();
          },
          () => {
+            this.loaderService.forceHide = false;
             this.router.navigate(['/view']);
             this.clearAllIntervals(this.intervalId);
             this.policyAccepted = false;
