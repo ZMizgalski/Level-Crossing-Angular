@@ -18,8 +18,7 @@ import { DatePipe } from '@angular/common';
 })
 export class CameraPreviewComponent implements OnInit, OnDestroy {
    @ViewChild('video') public video!: ElementRef;
-   public date!: Date;
-   public date2!: Date;
+   public date: Date = new Date();
    public areaName?: string;
    public areasDialog!: DynamicDialogRef;
    public logsDialog!: DynamicDialogRef;
@@ -43,57 +42,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       private datePipe: DatePipe
    ) {}
 
-   // areas: AreaModel[] = [
-   //    {
-   //       id: '66efa687-14e2-4bba-b35c-6221ff0a028d',
-   //       area: {
-   //          areaName: 'elo1',
-   //          pointsList: [
-   //             { x: 136, y: 142.359375 },
-   //             { x: 237, y: 293.359375 },
-   //             { x: 542, y: 287.359375 },
-   //             { x: 514, y: 94.359375 },
-   //             { x: 327, y: 73.359375 },
-   //          ],
-   //       },
-   //    },
-   //    {
-   //       id: '66efa687-14e2-4bba-b35c-6221ff0a028d',
-   //       area: {
-   //          areaName: 'elo2',
-   //          pointsList: [
-   //             { x: 80, y: 116.359375 },
-   //             { x: 18, y: 364.359375 },
-   //             { x: 85, y: 394.359375 },
-   //             { x: 197, y: 326.359375 },
-   //             { x: 71, y: 190.359375 },
-   //          ],
-   //       },
-   //    },
-   //    {
-   //       id: '66efa687-14e2-4bba-b35c-6221ff0a028d',
-   //       area: {
-   //          areaName: 'elo3',
-   //          pointsList: [
-   //             { x: 258, y: 81.359375 },
-   //             { x: 324, y: 79.359375 },
-   //             { x: 456, y: 83.359375 },
-   //             { x: 557, y: 112.359375 },
-   //             { x: 504, y: 133.359375 },
-   //             { x: 350, y: 109.359375 },
-   //          ],
-   //       },
-   //    },
-   // ];
-
-   // logs: LogsModel[] = [
-   //    { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_18-54-12' },
-   //    { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_18-57-12' },
-   //    { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_19-01-20' },
-   //    { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_19-04-20' },
-   //    { id: '0fbd7a0c-7894-4419-a996-54f78c17b550', time: '2021-07-06_19-06-59' },
-   // ];
-
    private gedIdFromRoute(): string | null {
       return this.route.snapshot.paramMap.get('id');
    }
@@ -111,15 +59,25 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       );
    }
 
-   private getAllFiles(id: string): void {
-      this.endpointService.getAllFilesByDayAndId(id, this.datePipe.transform(new Date(), 'yyyy-MM-dd_HH-mm-ss') || '').subscribe(
+   public selectDateAndGetLogs($event: Date): void {
+      this.getAllFiles(this.id || '', $event, false);
+   }
+
+   private getAllFiles(id: string, date: Date, dialogOpened: boolean): void {
+      this.logsUpdated = false;
+      this.endpointService.getAllFilesByDayAndId(id, this.datePipe.transform(date, 'yyyy-MM-dd_HH-mm-ss') || '').subscribe(
          (value: LogsModel[]) => {
             this.logs = value;
             this.logsUpdated = true;
+            !dialogOpened
+               ? this.messageService.add({ severity: 'success', summary: 'Server Response', detail: 'Logs has been found ' + date })
+               : '';
          },
          error => {
-            this.router.navigate(['/view']);
-            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
+            this.logs = [];
+            console.log(error);
+            this.logsUpdated = true;
+            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: 'Logs has not been found ' + date });
          }
       );
    }
@@ -129,7 +87,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       this.endpointService.getCameraById(this.id).subscribe(
          () => {
             this.getAllAreas(this.id || '');
-            this.getAllFiles(this.id || '');
+            this.getAllFiles(this.id || '', this.date, true);
          },
          error => {
             this.router.navigate(['/view']);
@@ -144,7 +102,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    }
 
    public showLogsDialog(): void {
-      this.getAllFiles(this.id || '');
+      this.getAllFiles(this.id || '', this.date, true);
       this.logsDialog = this.dialogService.open(LogsDynamicDialogComponent, {
          data: this.logs,
          header: 'Logs Table',
@@ -179,7 +137,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
          }
       );
-      this.getAllFiles(this.id || '');
+      this.getAllFiles(this.id || '', this.date, true);
    }
 
    public playLiveVideo(): void {
@@ -190,14 +148,14 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       this.endpointService.getFileByDateAndId(id, date).subscribe(
          response => {
             this.src = { data: new Blob([response.body as BlobPart], { type: 'video/mp4' }), srcChange: false };
-            this.getAllFiles(this.id || '');
+            this.getAllFiles(this.id || '', this.date, true);
          },
          error => {
             this.src?.srcChange == false
                ? (this.src = { data: undefined, srcChange: false })
                : (this.src = { data: undefined, srcChange: true });
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
-            this.getAllFiles(this.id || '');
+            this.getAllFiles(this.id || '', this.date, true);
          }
       );
    }

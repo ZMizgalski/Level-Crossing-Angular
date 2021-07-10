@@ -38,17 +38,12 @@
                <p-calendar
                   [disabled]="!policyAccteped"
                   [touchUI]="true"
+                  [touchUI]="true"
                   [showTime]="true"
                   [(ngModel)]="date"
                   [showIcon]="true"
                   [showButtonBar]="true"
-               ></p-calendar>
-               <p-calendar
-                  [disabled]="!policyAccteped"
-                  [(ngModel)]="date2"
-                  [showIcon]="true"
-                  icon="pi pi-filter"
-                  [timeOnly]="true"
+                  (onSelect)="selectDateAndGetLogs($event)"
                ></p-calendar>
 
                <div class="actions-data-picker-box-container">

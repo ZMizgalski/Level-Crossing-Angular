@@ -37,4 +37,9 @@ export class LogsDynamicDialogComponent {
       const responseLogsModel = { id: id, date: date, download: false };
       this.ref.close(responseLogsModel);
    }
+
+   public formatDate(date: string): string {
+      const splittedDate = date.split('_');
+      return splittedDate[1].replace('-', ':').replace('-', ':');
+   }
 }
