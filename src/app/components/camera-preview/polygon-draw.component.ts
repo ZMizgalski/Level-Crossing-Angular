@@ -1,3 +1,4 @@
+import { Router } from '@angular/router';
 import { AreaModel, Point } from './../interfaces/areaModel';
 import { LoaderService } from './../servieces/loader/loader-service';
 import { ConfirmationService } from 'primeng/api';
@@ -135,7 +136,8 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       private endpointService: EndpointService,
       private confirmationService: ConfirmationService,
       private loaderService: LoaderService,
-      private cdr: ChangeDetectorRef
+      private cdr: ChangeDetectorRef,
+      private router: Router
    ) {}
 
    private closeFigureAndFill(points: Point[]): void {
@@ -226,6 +228,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
             this.prepareCanvas();
          },
          () => {
+            this.router.navigate(['/view']);
             this.clearAllIntervals(this.intervalId);
             this.policyAccepted = false;
             this.videoLoaded = false;
