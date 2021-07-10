@@ -1,3 +1,9 @@
+export interface UpdateAreaModel {
+   id?: string;
+   oldAreaName?: string;
+   area?: Area;
+}
+
 export interface AreaModel {
    id?: string;
    area?: Area;

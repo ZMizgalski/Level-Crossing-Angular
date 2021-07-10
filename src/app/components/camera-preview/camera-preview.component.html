@@ -55,7 +55,7 @@
                   <button
                      pButton
                      pRipple
-                     [disabled]="!policyAccteped"
+                     [disabled]="!policyAccteped || !logsUpdated"
                      (click)="showLogsDialog()"
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
@@ -64,7 +64,7 @@
                   <button
                      pButton
                      pRipple
-                     [disabled]="!policyAccteped"
+                     [disabled]="!policyAccteped || !areasUpdated"
                      (click)="showAreasDialog()"
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"

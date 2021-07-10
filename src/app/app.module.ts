@@ -25,6 +25,7 @@ import { DialogModule } from 'primeng/dialog';
 import { InputTextModule } from 'primeng/inputtext';
 import { ToastModule } from 'primeng/toast';
 import { MessageService } from 'primeng/api';
+import { DatePipe } from '@angular/common';
 
 @NgModule({
    declarations: [
@@ -56,6 +57,7 @@ import { MessageService } from 'primeng/api';
       DialogService,
       ConfirmationService,
       LoaderService,
+      DatePipe,
       { provide: HTTP_INTERCEPTORS, useClass: HttpInterceptor, multi: true },
    ],
    bootstrap: [AppComponent],

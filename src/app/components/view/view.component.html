@@ -1,15 +1,15 @@
 <div class="view">
-  <div class="view-header">
-    <p class="view-header__p">View</p>
-    <div class="search-box">
-      <input #serachBox (keyup)="onKey(serachBox.value)" class="search-box__search-bar" />
-      <p-button class="search-box__button" icon="pi pi-search"></p-button>
-    </div>
-  </div>
-  <div *ngIf="!contentLoaded" class="view-content-continer">
-    <h3>No Cameras found!</h3>
-  </div>
-  <div *ngIf="contentLoaded" class="view-content-continer">
-    <app-camera-element *ngFor="let item of camerasData" [data]="item"></app-camera-element>
-  </div>
+   <div class="view-header">
+      <p class="view-header__p">View</p>
+      <div class="search-box">
+         <input #serachBox (keyup)="onKey(serachBox.value)" class="search-box__search-bar" />
+         <p-button class="search-box__button" icon="pi pi-search"></p-button>
+      </div>
+   </div>
+   <div *ngIf="!contentLoaded || camerasData == []" class="view-content-continer">
+      <h3>No Cameras found!</h3>
+   </div>
+   <div *ngIf="contentLoaded" class="view-content-continer">
+      <app-camera-element *ngFor="let item of camerasData" [data]="item"></app-camera-element>
+   </div>
 </div>

@@ -24,14 +24,14 @@ export class EndpointService {
       return this.http.get<CamerasModel[]>(this.endpointUrl + 'getAllCameras');
    }
 
-   public getFileByDate(id: string, date: string): Observable<HttpResponse<Blob>> {
+   public getFileByDateAndId(id: string, date: string): Observable<HttpResponse<Blob>> {
       return this.http.get<Blob>(this.endpointUrl + 'getFileByDate/' + id + '/' + date, {
          observe: 'response',
          responseType: 'blob' as 'json',
       });
    }
 
-   public getFilesByDay(id: string, day: string): Observable<any> {
+   public getAllFilesByDayAndId(id: string, day: string): Observable<any> {
       return this.http.get(this.endpointUrl + 'getFilesByDay/' + id + '/' + day);
    }
 
@@ -61,20 +61,21 @@ export class EndpointService {
    }
 
    public setNewArea(area: AreaModel): Observable<any> {
-      return this.http.post(this.endpointUrl + 'setArea', area);
+      return this.http.post(this.endpointUrl + 'setArea', area, { responseType: 'text' });
    }
 
    public deleteArea(area: deleteAreaModel): Observable<any> {
       return this.http.delete(this.endpointUrl + 'deleteArea', {
          body: area,
+         responseType: 'text',
       });
    }
 
    public updateArea(area: AreaModel): Observable<any> {
-      return this.http.put(this.endpointUrl + 'updateArea', area);
+      return this.http.put(this.endpointUrl + 'updateArea', area, { responseType: 'text' });
    }
 
    public motorControl(motor: ChangeMotorModel): Observable<any> {
-      return this.http.post(this.endpointUrl + 'motorControl', motor);
+      return this.http.post(this.endpointUrl + 'motorControl', motor, { responseType: 'text' });
    }
 }
