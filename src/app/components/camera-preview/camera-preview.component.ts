@@ -1,6 +1,6 @@
 import { Actions, NewAreaData, PolygonResponse } from './polygon-draw.component';
 import { EndpointService } from './../servieces/endpoint-service';
-import { AreaModel, Point } from './../interfaces/areaModel';
+import { AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent, ResponseLogsModel } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -84,10 +84,11 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    ngOnInit(): void {
       this.id = this.gedIdFromRoute() || '';
+      console.log(this.id);
       this.endpointService.getCameraById(this.id).subscribe(
          () => {
-            this.getAllAreas(this.id || '');
-            this.getAllFiles(this.id || '', this.date, true);
+            // this.getAllAreas(this.id || '');
+            // this.getAllFiles(this.id || '', this.date, true);
          },
          error => {
             this.router.navigate(['/view']);

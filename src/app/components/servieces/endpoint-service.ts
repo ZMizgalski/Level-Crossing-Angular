@@ -13,11 +13,11 @@ import { CameraModel } from '../interfaces/cameraModel';
 export class EndpointService {
    public endpointUrl?: string;
    constructor(private http: HttpClient) {
-      this.endpointUrl = 'http://localhost:8080/api/server/';
+      this.endpointUrl = 'http://192.168.1.212:8080/';
    }
 
    public getCameraById(id: string): Observable<CameraModel> {
-      return this.http.get<CameraModel>(this.endpointUrl + 'getCameraById/' + id);
+      return this.http.get<CameraModel>(this.endpointUrl + 'checkIfCameraIsOnline/' + id);
    }
 
    public getAllCameras(): Observable<CamerasModel[]> {
@@ -76,6 +76,6 @@ export class EndpointService {
    }
 
    public motorControl(motor: ChangeMotorModel): Observable<any> {
-      return this.http.post(this.endpointUrl + 'motorControl', motor, { responseType: 'text' });
+      return this.http.post(this.endpointUrl + 'crossingAction', motor, { responseType: 'text' });
    }
 }

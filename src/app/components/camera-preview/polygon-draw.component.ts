@@ -223,6 +223,9 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
          (response: HttpResponse<Blob>) => {
             this.videoTemplate = document.createElement('video');
+            if (!response.body) {
+               return;
+            }
             this.videoTemplate.src = URL.createObjectURL(response.body);
             this.videoTemplate.autoplay = true;
             this.prepareCanvas();

@@ -1,9 +1,6 @@
-import { MessageService } from 'primeng/api';
-import { Router } from '@angular/router';
 import { AreaModel } from './../../interfaces/areaModel';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
-import { EndpointService } from '../../servieces/endpoint-service';
 
 @Component({
    selector: 'app-areas-dynamic-dialog',
