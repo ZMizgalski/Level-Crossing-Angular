@@ -31,7 +31,7 @@ export interface NewAreaData {
    template: `
       <p-confirmDialog key="acceptPolicy" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
       <div #polygonContainer class="polygon-container" (mousedown)="selectPoint($event)">
-         <div class="polygon-container-spinner">
+         <!-- <div class="polygon-container-spinner">
             <i *ngIf="!videoLoaded && policyAccepted" class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
             <button
                *ngIf="!policyAccepted"
@@ -41,7 +41,7 @@ export interface NewAreaData {
                icon="pi pi-check"
                (click)="acceptCrossPolicy()"
             ></button>
-         </div>
+         </div> -->
          <canvas
             [ngStyle]="{ 'pointer-events': drawingEnabled ? 'all' : 'none' }"
             class="polygon-container__canvas"
@@ -108,6 +108,7 @@ export interface NewAreaData {
 })
 export class PolygonDraw implements AfterViewInit, OnDestroy {
    @Input() public areas: AreaModel[] = [];
+
    @Input() public selectedAreaColor?: string;
    @Input() public lineWidth?: string;
    @Input() public selectedAreaBorderColor?: string;
@@ -115,26 +116,29 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    @Input() public id?: string;
    @Input() public height?: string;
    @Input() public width?: string;
-   @Input() public areaName?: string;
+   @Input() public defaultAreaName?: string;
+
    @Input() public src?: { data: any; srcChange: boolean } = { data: undefined, srcChange: false };
    @Input() public drawingEnabled: boolean = false;
+
    @Output() public response = new EventEmitter();
    @ViewChild('polygon') private polygon!: ElementRef;
    @ViewChild('polygonContainer') private polygonContainer!: ElementRef;
-   public videoLoaded: boolean = false;
+
+   // public videoLoaded: boolean = false;
    private pointsList: Point[] = [];
    private canvas: any;
    private ctx: any;
-   private intervalId: number[] = [];
+   // private intervalId: number[] = [];
    private areaSelected: boolean = false;
    private areaEmitted: boolean = false;
    private videoTemplate!: HTMLVideoElement;
-   public policyAccepted: boolean = false;
-   public windowClosed: boolean = false;
+   // public policyAccepted: boolean = false;
+   // public windowClosed: boolean = false;
    constructor(
       private rd2: Renderer2,
       private endpointService: EndpointService,
-      private confirmationService: ConfirmationService,
+      // private confirmationService: ConfirmationService,
       private loaderService: LoaderService,
       private cdr: ChangeDetectorRef,
       private router: Router
@@ -177,8 +181,8 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    }
 
    private clearCanvas(intervalId: number[]): void {
-      this.videoLoaded = false;
-      this.windowClosed = true;
+      // this.videoLoaded = false;
+      // this.windowClosed = true;
       this.ctx != undefined ? this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) : '';
       this.pointsList = [];
       this.areaEmitted = false;
@@ -193,31 +197,33 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    }
 
    ngOnDestroy(): void {
-      this.clearCanvas(this.intervalId);
+      // this.clearCanvas(this.intervalId);
       this.loaderService.forceHide = false;
    }
 
    ngAfterViewInit(): void {
       this.loaderService.forceHide = true;
-      this.acceptCrossPolicy();
+      this.createVideoAndWaitForPolicy();
+      this.response.emit({ action: Actions.POLICY_ACCEPTED });
+      // this.acceptCrossPolicy();
       this.cdr.detectChanges();
    }
 
-   public acceptCrossPolicy(): void {
-      this.confirmationService.confirm({
-         message: 'To access video playback you need to accept Cross-Policy requirements',
-         accept: () => {
-            this.policyAccepted = true;
-            this.createVideoAndWaitForPolicy();
-            this.response.emit({ action: Actions.POLICY_ACCEPTED });
-         },
-         reject: () => {
-            this.policyAccepted = false;
-            return;
-         },
-         key: 'acceptPolicy',
-      });
-   }
+   // public acceptCrossPolicy(): void {
+   //    this.confirmationService.confirm({
+   //       message: 'To access video playback you need to accept Cross-Policy requirements',
+   //       accept: () => {
+   //          this.policyAccepted = true;
+   //          this.createVideoAndWaitForPolicy();
+   //          this.response.emit({ action: Actions.POLICY_ACCEPTED });
+   //       },
+   //       reject: () => {
+   //          this.policyAccepted = false;
+   //          return;
+   //       },
+   //       key: 'acceptPolicy',
+   //    });
+   // }
 
    private playLiveVideo(): void {
       this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
@@ -233,9 +239,9 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          () => {
             this.loaderService.forceHide = false;
             this.router.navigate(['/view']);
-            this.clearAllIntervals(this.intervalId);
-            this.policyAccepted = false;
-            this.videoLoaded = false;
+            // this.clearAllIntervals(this.intervalId);
+            // this.policyAccepted = false;
+            // this.videoLoaded = false;
             return;
          }
       );
@@ -262,7 +268,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
 
    private prepareCanvas(): void {
       this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
-      this.intervalId.push(this.setIntervalAndReturnId());
+      // this.intervalId.push(this.setIntervalAndReturnId());
       this.onVideoEnd();
    }
 
@@ -282,16 +288,16 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          this.ctx = this.canvas.getContext('2d');
          this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
          this.drawingEnabled ? this.drawOneAreaOnSelect(this.pointsList) : this.drawEachArea(this.areas);
-         this.checkIfCanvasIsBlank(this.canvas) ? (this.videoLoaded = false) : (this.videoLoaded = true);
+         // this.checkIfCanvasIsBlank(this.canvas) ? (this.videoLoaded = false) : (this.videoLoaded = true);
       }, 20);
       return id;
    }
 
    private srcChange(): void {
-      this.clearAllIntervals(this.intervalId);
+      // this.clearAllIntervals(this.intervalId);
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      this.videoLoaded = false;
-      !this.windowClosed ? this.createVideoAndWaitForPolicy() : '';
+      // this.videoLoaded = false;
+      // !this.windowClosed ? this.createVideoAndWaitForPolicy() : '';
       this.response.emit({ action: Actions.VIDEO_ENDED });
    }
 
@@ -310,10 +316,10 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       if (!this.drawingEnabled) {
          return false;
       }
-      if (!this.videoLoaded) {
-         this.response.emit({ action: Actions.VIDEO_NOT_FOUND });
-         return false;
-      }
+      // if (!this.videoLoaded) {
+      //    this.response.emit({ action: Actions.VIDEO_NOT_FOUND });
+      //    return false;
+      // }
       if (this.areaEmitted) {
          this.response.emit({ action: Actions.AREA_SELECTED });
          return false;
@@ -366,7 +372,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
          this.response.emit({ action: Actions.NOT_ENOUGHT_POINTS });
          return false;
       }
-      const area = { id: this.id || '', area: { areaName: this.areaName || 'Default Name', pointsList: this.pointsList } };
+      const area = { id: this.id || '', area: { areaName: this.defaultAreaName || 'Default Name', pointsList: this.pointsList } };
       !this.areaSelected ? this.areas.push(area) : '';
       $event.preventDefault();
       this.prepareCanvasForNewSelection();
@@ -377,7 +383,7 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       this.drawingEnabled = false;
       this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
       this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
-      this.response.emit({ action: Actions.AREA_CHANHED, body: { areaName: this.areaName, pointsList: this.pointsList } });
+      this.response.emit({ action: Actions.AREA_CHANHED, body: { areaName: this.defaultAreaName, pointsList: this.pointsList } });
       this.areaSelected = false;
       this.areaEmitted = false;
       this.pointsList = [];

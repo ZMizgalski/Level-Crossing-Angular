@@ -9,7 +9,7 @@
             lineWidth="3"
             [drawingEnabled]="enableDrawing"
             [id]="this.id"
-            [areaName]="areaName"
+            [defaultAreaName]="areaName"
             [areas]="areas"
             [src]="src"
             (response)="polygonResponse($event)"
@@ -36,7 +36,6 @@
             ></button>
             <div class="actions-data-picker-box">
                <p-calendar
-                  [disabled]="!policyAccteped"
                   [touchUI]="true"
                   [touchUI]="true"
                   [showTime]="true"
@@ -50,7 +49,7 @@
                   <button
                      pButton
                      pRipple
-                     [disabled]="!policyAccteped || !logsUpdated"
+                     [disabled]="!logsUpdated"
                      (click)="showLogsDialog()"
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
@@ -59,7 +58,7 @@
                   <button
                      pButton
                      pRipple
-                     [disabled]="!policyAccteped || !areasUpdated"
+                     [disabled]="!areasUpdated"
                      (click)="showAreasDialog()"
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
@@ -68,7 +67,7 @@
                   <button
                      pButton
                      pRipple
-                     [disabled]="!policyAccteped || src?.data == undefined"
+                     [disabled]="src?.data == undefined"
                      (click)="playLiveVideo()"
                      type="button"
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
