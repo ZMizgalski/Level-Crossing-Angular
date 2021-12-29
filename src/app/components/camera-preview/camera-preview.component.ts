@@ -17,14 +17,12 @@ import { DatePipe } from '@angular/common';
    styleUrls: ['./camera-preview.component.scss'],
 })
 export class CameraPreviewComponent implements OnInit, OnDestroy {
-   @ViewChild('video') public video!: ElementRef;
    public date: Date = new Date();
    public areaName?: string;
    public areasDialog!: DynamicDialogRef;
    public logsDialog!: DynamicDialogRef;
    public id?: string;
    public src?: { data: any; srcChange: boolean };
-   public policyAccteped: boolean = false;
    public enableDrawing: boolean = false;
    public showAreaNameDialog: boolean = false;
    private oldAreaToUpdate?: { index: number; oldAreaName: string };
@@ -75,7 +73,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
          },
          error => {
             this.logs = [];
-            console.log(error);
             this.logsUpdated = true;
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: 'Logs has not been found ' + date });
          }
@@ -206,7 +203,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    }
 
    public polygonResponse($event: PolygonResponse): void {
-      $event.action == Actions.POLICY_ACCEPTED ? (this.policyAccteped = true) : '';
       $event.action == Actions.AREA_CHANHED ? this.updateOrAddNewArea($event.body) : '';
    }
 

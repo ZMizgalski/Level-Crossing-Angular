@@ -38,7 +38,6 @@ export class CameraElementComponent implements OnInit {
             setTimeout(() => {
                this.loadImg(id);
             }, 3000);
-
             this.imgLoaded = false;
          }
       );

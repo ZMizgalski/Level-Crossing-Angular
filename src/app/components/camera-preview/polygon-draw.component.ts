@@ -31,17 +31,6 @@ export interface NewAreaData {
    template: `
       <p-confirmDialog key="acceptPolicy" header="Confirmation" icon="pi pi-exclamation-triangle"></p-confirmDialog>
       <div #polygonContainer class="polygon-container" (mousedown)="selectPoint($event)">
-         <!-- <div class="polygon-container-spinner">
-            <i *ngIf="!videoLoaded && policyAccepted" class="pi pi-spin pi-spinner polygon-container-spinner__icon"></i>
-            <button
-               *ngIf="!policyAccepted"
-               class="polygon-container-spinner__button"
-               pButton
-               label="Accept"
-               icon="pi pi-check"
-               (click)="acceptCrossPolicy()"
-            ></button>
-         </div> -->
          <canvas
             [ngStyle]="{ 'pointer-events': drawingEnabled ? 'all' : 'none' }"
             class="polygon-container__canvas"
@@ -59,13 +48,11 @@ export interface NewAreaData {
       `
          @import '../colors.scss';
          @import '../fonts.scss';
-
          @media screen and (max-width: 450px) {
             .polygon-container-spinner__icon {
                font-size: $font-size-small !important;
             }
          }
-
          .polygon-container {
             height: 100%;
             width: 100%;
@@ -73,31 +60,6 @@ export interface NewAreaData {
             position: relative;
             background: black;
             border-radius: 5px;
-
-            &-spinner {
-               display: flex;
-               flex-direction: column;
-               align-items: center;
-               justify-content: center;
-               position: absolute;
-               top: 50%;
-               pointer-events: none;
-               left: 50%;
-               transform: translate(-50%, -50%);
-               background: transparent;
-               &__icon {
-                  font-size: $font-size-big;
-                  transition: 0.2s ease;
-                  color: $Brighter-Blue;
-                  padding: 10px;
-                  background: transparent;
-               }
-
-               &__button {
-                  pointer-events: all;
-               }
-            }
-
             &__canvas {
                border-radius: inherit;
                cursor: crosshair;
@@ -108,7 +70,6 @@ export interface NewAreaData {
 })
 export class PolygonDraw implements AfterViewInit, OnDestroy {
    @Input() public areas: AreaModel[] = [];
-
    @Input() public selectedAreaColor?: string;
    @Input() public lineWidth?: string;
    @Input() public selectedAreaBorderColor?: string;
@@ -117,28 +78,21 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    @Input() public height?: string;
    @Input() public width?: string;
    @Input() public defaultAreaName?: string;
-
    @Input() public src?: { data: any; srcChange: boolean } = { data: undefined, srcChange: false };
    @Input() public drawingEnabled: boolean = false;
-
    @Output() public response = new EventEmitter();
    @ViewChild('polygon') private polygon!: ElementRef;
    @ViewChild('polygonContainer') private polygonContainer!: ElementRef;
-
-   // public videoLoaded: boolean = false;
    private pointsList: Point[] = [];
    private canvas: any;
    private ctx: any;
-   // private intervalId: number[] = [];
+   private intervalIds: number[] = [];
    private areaSelected: boolean = false;
    private areaEmitted: boolean = false;
-   private videoTemplate!: HTMLVideoElement;
-   // public policyAccepted: boolean = false;
-   // public windowClosed: boolean = false;
+   private imageTemplate!: HTMLImageElement;
    constructor(
       private rd2: Renderer2,
       private endpointService: EndpointService,
-      // private confirmationService: ConfirmationService,
       private loaderService: LoaderService,
       private cdr: ChangeDetectorRef,
       private router: Router
@@ -180,14 +134,13 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
       }
    }
 
-   private clearCanvas(intervalId: number[]): void {
-      // this.videoLoaded = false;
-      // this.windowClosed = true;
+   private clearCanvas(): void {
       this.ctx != undefined ? this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height) : '';
       this.pointsList = [];
       this.areaEmitted = false;
       this.areaSelected = false;
-      this.clearAllIntervals(intervalId);
+      this.clearAllIntervals(this.intervalIds);
+      this.router.navigate(['/view']);
    }
 
    private clearAllIntervals(intervalList: number[]): void {
@@ -197,129 +150,45 @@ export class PolygonDraw implements AfterViewInit, OnDestroy {
    }
 
    ngOnDestroy(): void {
-      // this.clearCanvas(this.intervalId);
+      this.clearCanvas();
       this.loaderService.forceHide = false;
    }
 
    ngAfterViewInit(): void {
       this.loaderService.forceHide = true;
-      this.createVideoAndWaitForPolicy();
+      this.getVideoSrc();
       this.response.emit({ action: Actions.POLICY_ACCEPTED });
-      // this.acceptCrossPolicy();
       this.cdr.detectChanges();
    }
 
-   // public acceptCrossPolicy(): void {
-   //    this.confirmationService.confirm({
-   //       message: 'To access video playback you need to accept Cross-Policy requirements',
-   //       accept: () => {
-   //          this.policyAccepted = true;
-   //          this.createVideoAndWaitForPolicy();
-   //          this.response.emit({ action: Actions.POLICY_ACCEPTED });
-   //       },
-   //       reject: () => {
-   //          this.policyAccepted = false;
-   //          return;
-   //       },
-   //       key: 'acceptPolicy',
-   //    });
-   // }
-
-   private playLiveVideo(): void {
-      this.endpointService.getCameraLiveVideoById(this.id || '').subscribe(
-         (response: HttpResponse<Blob>) => {
-            this.videoTemplate = document.createElement('video');
-            if (!response.body) {
-               return;
-            }
-            this.videoTemplate.src = URL.createObjectURL(response.body);
-            this.videoTemplate.autoplay = true;
-            this.prepareCanvas();
-         },
-         () => {
-            this.loaderService.forceHide = false;
-            this.router.navigate(['/view']);
-            // this.clearAllIntervals(this.intervalId);
-            // this.policyAccepted = false;
-            // this.videoLoaded = false;
-            return;
-         }
-      );
-   }
-
-   private playRecordedVideo(): void {
-      if (this.src?.data != undefined) {
-         if (this.src.data.size != 0) {
-            this.videoTemplate = document.createElement('video');
-            this.videoTemplate.src = URL.createObjectURL(this.src.data);
-            this.videoTemplate.autoplay = true;
-            this.prepareCanvas();
-         } else {
-            this.playLiveVideo();
-         }
-      } else {
-         this.playLiveVideo();
-      }
-   }
-
-   private createVideoAndWaitForPolicy(): void {
-      this.src?.data != undefined ? this.playRecordedVideo() : this.playLiveVideo();
+   private getVideoSrc(): void {
+      this.imageTemplate = document.createElement('img');
+      this.imageTemplate.src = this.endpointService.endpointUrl + 'server-stream/' + this.id || '';
+      this.prepareCanvas();
    }
 
    private prepareCanvas(): void {
       this.canvas = this.rd2.selectRootElement(this.polygon.nativeElement);
-      // this.intervalId.push(this.setIntervalAndReturnId());
-      this.onVideoEnd();
-   }
-
-   private onVideoEnd(): void {
-      this.videoTemplate?.addEventListener('ended', () => {
-         this.srcChange();
-      });
-   }
-
-   private setIntervalAndReturnId(): number {
-      this.areaSelected = false;
-      this.areaEmitted = false;
-      this.pointsList = [];
-      this.src = { data: undefined, srcChange: false };
       const id = window.setInterval(() => {
-         this.src?.srcChange == true ? this.srcChange() : '';
          this.ctx = this.canvas.getContext('2d');
-         this.ctx.drawImage(this.videoTemplate, 0, 0, this.canvas.width, this.canvas.height);
+         try {
+            this.ctx.drawImage(this.imageTemplate, 0, 0, this.canvas.width, this.canvas.height);
+         } catch (error) {
+            this.clearCanvas();
+         }
          this.drawingEnabled ? this.drawOneAreaOnSelect(this.pointsList) : this.drawEachArea(this.areas);
-         // this.checkIfCanvasIsBlank(this.canvas) ? (this.videoLoaded = false) : (this.videoLoaded = true);
-      }, 20);
-      return id;
-   }
-
-   private srcChange(): void {
-      // this.clearAllIntervals(this.intervalId);
-      this.ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
-      // this.videoLoaded = false;
-      // !this.windowClosed ? this.createVideoAndWaitForPolicy() : '';
-      this.response.emit({ action: Actions.VIDEO_ENDED });
+      }, 5);
+      this.intervalIds.push(id);
    }
 
    private drawOneAreaOnSelect(area: Point[]): void {
       this.areaSelected ? this.closeFigureAndFill(area) : this.drawLines(area);
    }
 
-   private checkIfCanvasIsBlank(canvas: any): boolean {
-      return !canvas
-         .getContext('2d')
-         .getImageData(0, 0, canvas.width, canvas.height)
-         .data.some((channel: number) => channel !== 0);
-   }
-
    public selectPoint($event: any): boolean {
       if (!this.drawingEnabled) {
          return false;
       }
-      // if (!this.videoLoaded) {
-      //    this.response.emit({ action: Actions.VIDEO_NOT_FOUND });
-      //    return false;
-      // }
       if (this.areaEmitted) {
          this.response.emit({ action: Actions.AREA_SELECTED });
          return false;
