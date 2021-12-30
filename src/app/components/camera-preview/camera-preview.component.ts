@@ -1,6 +1,6 @@
 import { Actions, NewAreaData, PolygonResponse } from './polygon-draw.component';
 import { EndpointService } from './../servieces/endpoint-service';
-import { Area, AreaModel, RawArea } from './../interfaces/areaModel';
+import { Area, AreaModel } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent, ResponseLogsModel } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
