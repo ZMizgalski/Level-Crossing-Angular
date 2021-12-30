@@ -7,23 +7,6 @@
    }
 }
 
-:host ::ng-deep {
-   p-dialog div div {
-      .input-container {
-         display: flex;
-         justify-content: center;
-         align-items: center;
-      }
-      .p-dialog-footer {
-         display: flex;
-         align-content: center;
-         justify-content: center;
-         align-items: center;
-         flex-wrap: wrap;
-      }
-   }
-}
-
 :host {
    width: 100%;
    height: inherit;

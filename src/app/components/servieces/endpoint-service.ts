@@ -24,12 +24,12 @@ export class EndpointService {
       return this.http.get<CamerasModel[]>(this.endpointUrl + 'getAllCameras');
    }
 
-   public getFileByDateAndId(id: string, date: string): Observable<HttpResponse<Blob>> {
-      return this.http.get<Blob>(this.endpointUrl + 'getFileByDate/' + id + '/' + date, {
-         observe: 'response',
-         responseType: 'blob' as 'json',
-      });
-   }
+   // public getFileByDateAndId(id: string, date: string): Observable<HttpResponse<Blob>> {
+   //    return this.http.get<Blob>(this.endpointUrl + 'getFileByDate/' + id + '/' + date, {
+   //       observe: 'response',
+   //       responseType: 'blob' as 'json',
+   //    });
+   // }
 
    public getAllFilesByDayAndId(id: string, day: string): Observable<any> {
       return this.http.get(this.endpointUrl + 'getFilesByDay/' + id + '/' + day);

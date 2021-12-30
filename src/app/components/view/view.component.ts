@@ -57,14 +57,12 @@ export class ViewComponent implements OnInit, OnDestroy {
                   return value;
                });
                this.camerasData = this.camerasWithSrc;
-               console.log(this.camerasData);
                this._contentLoaded$ = new BehaviorSubject<boolean>(true);
             } else {
                this._contentLoaded$ = new BehaviorSubject<boolean>(false);
             }
          },
          () => {
-            console.log('3');
             this._contentLoaded$ = new BehaviorSubject<boolean>(false);
          }
       );

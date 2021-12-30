@@ -21,6 +21,7 @@
             <button
                pButton
                pRipple
+               [disabled]="true"
                (click)="previousCamera()"
                icon="pi pi-chevron-left"
                type="button"
@@ -28,6 +29,7 @@
             ></button>
             <button
                pButton
+               [disabled]="true"
                pRipple
                (click)="nextCamera()"
                icon="pi pi-chevron-right"
@@ -64,38 +66,10 @@
                      class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
                      icon="pi pi-sliders-v"
                   ></button>
-                  <button
-                     pButton
-                     pRipple
-                     [disabled]="src?.data == undefined"
-                     (click)="playLiveVideo()"
-                     type="button"
-                     class="actions-data-picker-box-container__button p-button-rounded p-button-secondary p-button-text"
-                     icon="pi pi-video"
-                  ></button>
                </div>
             </div>
          </div>
       </div>
    </div>
 </div>
-
 <p-toast [baseZIndex]="50001"></p-toast>
-
-<p-dialog
-   header="Set new area name"
-   [(visible)]="showAreaNameDialog"
-   [modal]="true"
-   [style]="{width: '50vw'}"
-   [baseZIndex]="10001"
-   [draggable]="false"
-   [resizable]="false"
->
-   <div class="p-input-filled input-container">
-      <input type="text" pInputText #input placeholder="Area Name" />
-   </div>
-   <ng-template pTemplate="footer">
-      <p-button icon="pi pi-check" (click)="newAreaNameAccept(input)" label="Yes" class="p-button-text"></p-button>
-      <p-button icon="pi pi-times" (click)="newAreaNameReject()" label="No"></p-button>
-   </ng-template>
-</p-dialog>

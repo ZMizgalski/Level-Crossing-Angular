@@ -1,11 +1,9 @@
 import { Router } from '@angular/router';
 import { AreaModel, Point } from './../interfaces/areaModel';
 import { LoaderService } from './../servieces/loader/loader-service';
-import { ConfirmationService } from 'primeng/api';
 import { EndpointService } from './../servieces/endpoint-service';
 import { Input, Output, Renderer2, EventEmitter, ViewChild, ElementRef, AfterViewInit, ChangeDetectorRef } from '@angular/core';
 import { Component, OnDestroy } from '@angular/core';
-import { HttpResponse } from '@angular/common/http';
 
 export enum Actions {
    VIDEO_ENDED = 0,

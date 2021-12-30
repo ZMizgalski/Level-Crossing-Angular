@@ -1,6 +1,6 @@
 import { Actions, NewAreaData, PolygonResponse } from './polygon-draw.component';
 import { EndpointService } from './../servieces/endpoint-service';
-import { AreaModel } from './../interfaces/areaModel';
+import { Area, AreaModel, RawArea } from './../interfaces/areaModel';
 import { AreasDynamicDialogComponent } from './areas-dynamic-dialog/areas-dynamic-dialog.component';
 import { LogsDynamicDialogComponent, ResponseLogsModel } from './logs-dynamic-dialog/logs-dynamic-dialog.component';
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
@@ -46,9 +46,9 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    private getAllAreas(id: string): void {
       this.endpointService.getAllAreasById(id).subscribe(
-         (value: AreaModel[]) => {
-            this.areas = value;
+         (value: Area[]) => {
             this.areasUpdated = true;
+            this.areas = value.map(area => ({ id: id, area: area }));
          },
          error => {
             this.router.navigate(['/view']);
@@ -63,7 +63,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    private getAllFiles(id: string, date: Date, dialogOpened: boolean): void {
       this.logsUpdated = false;
-      this.endpointService.getAllFilesByDayAndId(id, this.datePipe.transform(date, 'yyyy-MM-dd_HH-mm-ss') || '').subscribe(
+      this.endpointService.getAllFilesByDayAndId(id, this.datePipe.transform(date, 'yyyy-MM-dd') || '').subscribe(
          (value: LogsModel[]) => {
             this.logs = value;
             this.logsUpdated = true;
@@ -81,11 +81,10 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    ngOnInit(): void {
       this.id = this.gedIdFromRoute() || '';
-      console.log(this.id);
       this.endpointService.getCameraById(this.id).subscribe(
          () => {
-            // this.getAllAreas(this.id || '');
-            // this.getAllFiles(this.id || '', this.date, true);
+            this.getAllAreas(this.id || '');
+            this.getAllFiles(this.id || '', this.date, true);
          },
          error => {
             this.router.navigate(['/view']);
@@ -101,6 +100,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    public showLogsDialog(): void {
       this.getAllFiles(this.id || '', this.date, true);
+      console.log(this.logs);
       this.logsDialog = this.dialogService.open(LogsDynamicDialogComponent, {
          data: this.logs,
          header: 'Logs Table',
@@ -112,7 +112,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
       this.logsDialog.onClose.subscribe((value: ResponseLogsModel) => {
          if (value != undefined) {
             this.logsUpdated = false;
-            value.download ? this.downloadFile(value.id, value.date) : this.playOldRecord(value.id, value.date);
+            value.download ? this.downloadFile(value.id, value.date) : '';
          }
       });
    }
@@ -136,26 +136,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
          }
       );
       this.getAllFiles(this.id || '', this.date, true);
-   }
-
-   public playLiveVideo(): void {
-      this.src = { data: undefined, srcChange: true };
-   }
-
-   private playOldRecord(id: string, date: string): void {
-      this.endpointService.getFileByDateAndId(id, date).subscribe(
-         response => {
-            this.src = { data: new Blob([response.body as BlobPart], { type: 'video/mp4' }), srcChange: false };
-            this.getAllFiles(this.id || '', this.date, true);
-         },
-         error => {
-            this.src?.srcChange == false
-               ? (this.src = { data: undefined, srcChange: false })
-               : (this.src = { data: undefined, srcChange: true });
-            this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
-            this.getAllFiles(this.id || '', this.date, true);
-         }
-      );
    }
 
    public showAreasDialog(): void {
@@ -248,7 +228,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
    }
 
    private updateAreaAfterResponse(index: number, area: AreaModel, responseBody: NewAreaData, areaName: string) {
-      console.log(area, responseBody);
       const updateArea = { id: area.id, oldAreaName: areaName, area: responseBody };
       this.endpointService.updateArea(updateArea).subscribe(
          response => {

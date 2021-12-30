@@ -33,11 +33,6 @@ export class LogsDynamicDialogComponent {
       this.ref.close(responseLogsModel);
    }
 
-   public play(id: string, date: string): void {
-      const responseLogsModel = { id: id, date: date, download: false };
-      this.ref.close(responseLogsModel);
-   }
-
    public formatDate(date: string): string {
       const splittedDate = date.split('_');
       return splittedDate[1].replace('-', ':').replace('-', ':');
