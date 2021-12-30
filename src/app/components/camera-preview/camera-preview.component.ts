@@ -100,7 +100,6 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
 
    public showLogsDialog(): void {
       this.getAllFiles(this.id || '', this.date, true);
-      console.log(this.logs);
       this.logsDialog = this.dialogService.open(LogsDynamicDialogComponent, {
          data: this.logs,
          header: 'Logs Table',
@@ -132,6 +131,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
             }, 100);
          },
          error => {
+            this.router.navigate(['/view']);
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
          }
       );
@@ -196,6 +196,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
             this.getAllAreas(this.id || '');
          },
          error => {
+            this.router.navigate(['/view']);
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error });
             this.getAllAreas(this.id || '');
          }
@@ -239,6 +240,7 @@ export class CameraPreviewComponent implements OnInit, OnDestroy {
          },
          error => {
             this.deleteAreaAfterErrorResponse(responseBody);
+            this.router.navigate(['/view']);
             this.messageService.add({ severity: 'error', summary: 'Server Response', detail: error.error.text });
             this.oldAreaToUpdate = undefined;
             this.getAllAreas(this.id || '');

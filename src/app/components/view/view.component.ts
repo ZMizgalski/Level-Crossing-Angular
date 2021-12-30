@@ -72,6 +72,6 @@ export class ViewComponent implements OnInit, OnDestroy {
       this.loaderService.forceHide = true;
       this.intervalId = window.setInterval(() => {
          this.awaitToCoverChange();
-      }, 200);
+      }, 5000);
    }
 }
