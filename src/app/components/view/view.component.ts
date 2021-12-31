@@ -26,7 +26,6 @@ export class ViewComponent implements OnInit, OnDestroy {
       }
       this.camerasData = this.camerasWithSrc.filter((item: CamerasWithSrc) => {
          const data = item.data || '';
-         console.log(data.toLowerCase().includes(boxValue.toLowerCase()));
          return data.toLowerCase().includes(boxValue.toLowerCase());
       });
    }

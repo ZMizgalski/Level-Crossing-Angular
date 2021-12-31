@@ -13,7 +13,8 @@ import { CameraExistanceCheck } from '../interfaces/cameraModel';
 export class EndpointService {
    public endpointUrl?: string;
    constructor(private http: HttpClient) {
-      this.endpointUrl = 'http://192.168.1.212:8080/';
+      this.endpointUrl = '';
+      // this.endpointUrl = 'http://192.168.1.212:8080/';
    }
 
    public getCameraById(id: string): Observable<CameraExistanceCheck> {
