@@ -41,7 +41,8 @@ List the ready features here:
 ![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/10.png)
 
 ## Setup
-- npm i
+- Run `npm i`
+- Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
 
 ## Usage
 1. Create a folder named you like.
