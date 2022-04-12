@@ -1,27 +1,62 @@
-# LevelCrossingAngular
+# Level-Crossing-Angular
+> The level crossing website made with Angular for competition: "OLIMPIADA INNOWACJI TECHNICZNYCH I WYNALAZCZOŚCI" [Link](https://www.pzswir.pl/olimpiada)
 
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 12.1.0.
+## Table of Contents
+* [General Info](#general-information)
+* [Technologies Used](#technologies-used)
+* [Features](#features)
+* [Screenshots](#screenshots)
+* [Setup](#setup)
+* [Usage](#usage)
+* [Project Status](#project-status)
+* [Room for Improvement](#room-for-improvement)
+* [Contact](#contact)
+* [License](#license)
 
-## Development server
+## General Information
+- This project was made for school competition and also to improve railroads in whole country. It uses AI to detect objects and decide to open crossing barriers when someone is blocked. To work properly it needs to be connected to a network. 
 
-Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The app will automatically reload if you change any of the source files.
+## Technologies Used
+- Angular
+- Canvas drawing
+- PrimeNG
 
-## Code scaffolding
+## Features
+List the ready features here:
+- Area selection 
+- Logs collection
+- Responssive Design
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+## Screenshots
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/logo.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/1.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/2.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/3.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/4.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/5.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/6.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/7.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/8.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/9.png)
+![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/10.png)
 
-## Build
+## Setup
+- Angular 13.0.0
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+## Usage
+1. Create a folder named you like.
+2. Inside your folder, open console and paste: `git clone https://github.com/ZMizgalski/Level-Crossing-Angular.git`
+5. Then you are ready to go just open it in any Editor. (I prefer VSCode) [Download here](https://code.visualstudio.com/)
 
-## Running unit tests
+## Project Status
+Project is:  _complete_ .
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+## Room for Improvement
+- Security
+- http requests to cloud database
 
-## Running end-to-end tests
+## Contact
+Created by [@zmizgalski](https://zmizgalski.github.io/) - feel free to contact me!
 
-Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
-
-## Further help
-
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
+## License
+This project is open source and available under the [... License](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/LICENSE).
