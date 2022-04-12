@@ -41,7 +41,7 @@ List the ready features here:
 ![img](https://github.com/ZMizgalski/Level-Crossing-Angular/blob/python-clinet/imgs/10.png)
 
 ## Setup
-- Angular 13.0.0
+- npm i
 
 ## Usage
 1. Create a folder named you like.
